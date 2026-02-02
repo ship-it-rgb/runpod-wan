@@ -1,19 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "--- Configuring rclone for R2 ---"
+echo "--- Setting up models ---"
 
-# Check required environment variables
-if [ -z "$R2_ACCESS_KEY" ] || [ -z "$R2_SECRET_KEY" ] || [ -z "$R2_ENDPOINT" ]; then
-    echo "ERROR: R2_ACCESS_KEY, R2_SECRET_KEY, and R2_ENDPOINT must be set"
-    exit 1
-fi
+# Create model directories
+mkdir -p /workspace/models/{diffusion_models,text_encoders,vae,loras,clip_vision}
 
-R2_BUCKET="${R2_BUCKET:-wan-models}"
-
-# Configure rclone
-mkdir -p ~/.config/rclone
-cat > ~/.config/rclone/rclone.conf << EOF
+# === R2 CONFIGURATION (for CivitAI models only) ===
+if [ -n "$R2_ACCESS_KEY" ] && [ -n "$R2_SECRET_KEY" ] && [ -n "$R2_ENDPOINT" ]; then
+    echo "Configuring rclone for R2..."
+    mkdir -p ~/.config/rclone
+    cat > ~/.config/rclone/rclone.conf << EOF
 [r2]
 type = s3
 provider = Cloudflare
@@ -22,38 +19,72 @@ secret_access_key = ${R2_SECRET_KEY}
 endpoint = ${R2_ENDPOINT}
 acl = private
 EOF
+    R2_CONFIGURED=true
+else
+    echo "WARNING: R2 credentials not set. DaSiWa model will not be available."
+    R2_CONFIGURED=false
+fi
 
-echo "--- Downloading models from R2 ---"
+R2_BUCKET="${R2_BUCKET:-wan-models}"
 
-# Create model directories
-mkdir -p /workspace/models/{diffusion_models,text_encoders,vae,loras,clip_vision}
-
-# Function to download if not exists
-download_if_missing() {
+# === DOWNLOAD FUNCTIONS ===
+download_from_r2() {
     local r2_path=$1
     local local_path=$2
     local name=$3
     
-    if [ ! -f "$local_path" ]; then
-        echo "Downloading $name..."
+    if [ "$R2_CONFIGURED" = "true" ] && [ ! -f "$local_path" ]; then
+        echo "Downloading $name from R2..."
         rclone copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
-            --transfers 16 \
-            --s3-chunk-size 64M \
-            --buffer-size 128M \
-            --progress
+            --transfers 16 --s3-chunk-size 64M --buffer-size 128M
+        echo "✓ $name downloaded from R2"
+    elif [ -f "$local_path" ]; then
+        echo "✓ $name already exists"
+    fi
+}
+
+download_from_hf() {
+    local url=$1
+    local dest=$2
+    local name=$3
+    
+    if [ ! -f "$dest" ]; then
+        echo "Downloading $name from HuggingFace..."
+        aria2c -x 16 -s 16 -k 1M -o "$(basename "$dest")" -d "$(dirname "$dest")" "$url" --quiet
         echo "✓ $name downloaded"
     else
         echo "✓ $name already exists"
     fi
 }
 
-# Download all models in parallel
-download_if_missing "diffusion_models/smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors" "/workspace/models/diffusion_models/smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors" "smoothMix_v2" &
-download_if_missing "diffusion_models/DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors" "/workspace/models/diffusion_models/DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors" "DaSiWa_v9" &
-download_if_missing "text_encoders/NSFW-Wan-UMT5-XXL_fp8_scaled.safetensors" "/workspace/models/text_encoders/NSFW-Wan-UMT5-XXL_fp8_scaled.safetensors" "NSFW-Wan-UMT5-XXL" &
-download_if_missing "vae/wan2.1_vae.safetensors" "/workspace/models/vae/wan2.1_vae.safetensors" "wan2.1_vae" &
-download_if_missing "loras/WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors" "/workspace/models/loras/WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors" "lightx2v_LoRA" &
-download_if_missing "clip_vision/clip_vision_h.safetensors" "/workspace/models/clip_vision/clip_vision_h.safetensors" "clip_vision_h" &
+# === DOWNLOAD MODELS ===
+echo "--- Downloading models in parallel ---"
+
+# R2: DaSiWa (CivitAI model - not on HuggingFace)
+download_from_r2 "diffusion_models/DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors" \
+    "/workspace/models/diffusion_models/DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors" \
+    "DaSiWa_v9" &
+
+# HuggingFace: All other models
+download_from_hf "https://huggingface.co/landon2022/smooth_mix_v2/resolve/main/smoothMixWan2214BI2V_i2vV20High.safetensors" \
+    "/workspace/models/diffusion_models/smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors" \
+    "smoothMix_v2" &
+
+download_from_hf "https://huggingface.co/NSFW-API/NSFW-Wan-UMT5-XXL/resolve/main/nsfw_wan_umt5-xxl_fp8_scaled.safetensors" \
+    "/workspace/models/text_encoders/NSFW-Wan-UMT5-XXL_fp8_scaled.safetensors" \
+    "NSFW-Wan-UMT5-XXL" &
+
+download_from_hf "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors" \
+    "/workspace/models/vae/wan2.1_vae.safetensors" \
+    "wan2.1_vae" &
+
+download_from_hf "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors" \
+    "/workspace/models/loras/WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors" \
+    "lightx2v_LoRA" &
+
+download_from_hf "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors" \
+    "/workspace/models/clip_vision/clip_vision_h.safetensors" \
+    "clip_vision_h" &
 
 wait
 echo "--- All models ready ---"
