@@ -4,6 +4,11 @@ FROM runpod/worker-comfyui:5.6.0-base
 RUN apt-get update && apt-get install -y gcc g++ python3-dev && \
     rm -rf /var/lib/apt/lists/*
 
+# rclone 설치 (R2/S3 다운로드용)
+RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
+    dpkg -i rclone-current-linux-amd64.deb && \
+    rm rclone-current-linux-amd64.deb
+
 # 커스텀 노드 설치 (git clone 방식 - 안정적)
 RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
