@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y gcc g++ python3-dev && \
 # 커스텀 노드 설치
 RUN comfy node install --exit-on-fail comfyui-kjnodes
 RUN comfy node install --exit-on-fail rgthree-comfy
-RUN comfy node install --exit-on-fail comfyui_essentials
+RUN comfy node install --exit-on-fail comfyui-essentials
 RUN comfy node install --exit-on-fail comfyui-easy-use
-RUN comfy node install --exit-on-fail comfyui-videohelpersuites
+RUN comfy node install --exit-on-fail comfyui-videohelpersuite
 RUN comfy node install --exit-on-fail comfyui-crystools
 RUN comfy node install --exit-on-fail res4lyf
-RUN comfy node install --exit-on-fail comfyui-custom-scripts
+RUN comfy node install --exit-on-fail pythongosssss-comfyui-custom-scripts
 RUN comfy node install --exit-on-fail comfyui-qwenvl
 
 # Python 패키지 설치
