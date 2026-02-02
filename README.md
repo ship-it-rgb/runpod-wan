@@ -9,8 +9,33 @@ This project provides a RunPod serverless endpoint for the Wan2.2 Image-to-Video
 - **SageAttention Optimization**: Improved performance and reduced VRAM usage.
 - **Network Volume Support**: Efficient model management using RunPod network volumes.
 - **Wan2.2 I2V Support**: High-quality video generation from images.
+- **RTX 5090 Support**: Recommended for full resolution generation (32GB VRAM).
+
+## GPU Requirements
+
+| GPU | Resolution Support | Notes |
+|-----|-------------------|-------|
+| RTX 4090 (24GB) | Limited | May OOM on high-resolution workflows. |
+| RTX 5090 (32GB) | Full | Recommended for the best experience and highest resolution. |
+
+## Automatic Model Download
+
+If the required models are not found in the volume (or if no volume is used), they will be automatically downloaded on the first boot.
+- **First Boot**: Takes ~3-5 minutes depending on network speed.
+- **Subsequent Boots**: Instant, as models are cached in the Container/Volume Disk.
 
 ## Usage
+
+### Quick Start (RTX 5090 Regions)
+
+For regions like **eu-is-2** or **eu-no-1** where network volumes might not be available, you can run with just a Container Disk:
+
+- **Container Image**: `ghcr.io/ship-it-rgb/runpod-wan:main`
+- **GPU**: RTX 5090
+- **Region**: `eu-is-2` or `eu-no-1`
+- **Container Disk**: 50GB (required for model cache)
+- **Volume**: None required
+- **Port**: 8188 (HTTP)
 
 ### Building Locally
 
@@ -22,7 +47,7 @@ docker build -t runpod-wan .
 
 ### Running in Pod Mode
 
-By default, the container starts in Pod mode, providing access to the ComfyUI web UI on port 3000.
+By default, the container starts in Pod mode, providing access to the ComfyUI web UI on port 8188.
 
 ### Running in Serverless Mode
 
@@ -33,7 +58,7 @@ Set the environment variable `RUNPOD_SERVERLESS` to `true` to enable the serverl
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `RUNPOD_SERVERLESS` | Set to `true` to enable serverless mode. | `false` |
-| `COMFY_PORT` | The port ComfyUI will run on. | `3000` |
+| `COMFY_PORT` | The port ComfyUI will run on. | `8188` |
 
 ## API Input/Output
 
