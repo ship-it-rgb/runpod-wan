@@ -14,7 +14,7 @@ RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/crystian/ComfyUI-Crystools.git && \
     git clone https://github.com/ClownsharkBatwing/RES4LYF.git && \
     git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git && \
-    git clone https://github.com/1038lab/ComfyUI-QwenVL.git
+    git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git
 
 # 각 노드의 requirements 설치
 RUN cd /comfyui/custom_nodes && \
