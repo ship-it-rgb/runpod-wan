@@ -88,7 +88,7 @@ Set the environment variable `RUNPOD_SERVERLESS` to `true` to enable the serverl
 
 ## Network Volume Setup
 
-This endpoint is designed to work with a RunPod network volume mounted at `/workspace/ComfyUI`. The following model paths are expected:
+This endpoint is designed to work with a RunPod network volume mounted at `/workspace/ComfyUI`. Note that network volumes are optional if you are using Cloudflare R2 for model storage. The following model paths are expected:
 
 - `models/diffusion_models/`:
   - `smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors`
@@ -101,6 +101,56 @@ This endpoint is designed to work with a RunPod network volume mounted at `/work
   - `WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors`
 - `models/clip_vision/`:
   - `clip_vision_h.safetensors`
+
+## Cloudflare R2 Setup (Required)
+
+### 1. Create R2 Bucket
+- Go to https://dash.cloudflare.com
+- Navigate to R2 Object Storage
+- Create bucket named `wan-models`
+
+### 2. Create API Token
+- R2 → Manage R2 API Tokens → Create API token
+- Permission: Object Read & Write
+- Save: Access Key ID, Secret Access Key, Endpoint URL
+
+### 3. Upload Models to R2
+```bash
+# Install rclone
+brew install rclone  # macOS
+# or: curl https://rclone.org/install.sh | sudo bash
+
+# Configure rclone
+rclone config
+# Type: s3, Provider: Cloudflare, enter your credentials
+
+# Upload models (from existing RunPod volume or local)
+rclone copy ./models r2:wan-models/ --progress
+```
+
+Expected R2 bucket structure:
+```
+wan-models/
+├── diffusion_models/
+│   ├── smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors
+│   └── DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors
+├── text_encoders/
+│   └── NSFW-Wan-UMT5-XXL_fp8_scaled.safetensors
+├── vae/
+│   └── wan2.1_vae.safetensors
+├── loras/
+│   └── WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors
+└── clip_vision/
+    └── clip_vision_h.safetensors
+```
+
+### 4. RunPod Environment Variables
+| Variable | Description | Example |
+|----------|-------------|---------|
+| R2_ACCESS_KEY | Cloudflare R2 Access Key ID | abc123... |
+| R2_SECRET_KEY | Cloudflare R2 Secret Access Key | xyz789... |
+| R2_ENDPOINT | R2 Endpoint URL | https://xxx.r2.cloudflarestorage.com |
+| R2_BUCKET | Bucket name (optional, default: wan-models) | wan-models |
 
 ## License
 
