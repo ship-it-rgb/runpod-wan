@@ -1,13 +1,11 @@
 FROM runpod/worker-comfyui:5.6.0-base
 
-# SageAttention 빌드를 위한 시스템 의존성 설치 + curl for rclone download
-RUN apt-get update && apt-get install -y gcc g++ python3-dev curl && \
-    rm -rf /var/lib/apt/lists/*
-
-# rclone 설치 (R2/S3 다운로드용)
-RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
-    dpkg -i rclone-current-linux-amd64.deb && \
-    rm rclone-current-linux-amd64.deb
+RUN apt-get update && apt-get install -y \
+    gcc g++ python3-dev curl aria2 \
+    && curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb \
+    && dpkg -i rclone-current-linux-amd64.deb \
+    && rm rclone-current-linux-amd64.deb \
+    && rm -rf /var/lib/apt/lists/*
 
 # 커스텀 노드 설치 (git clone 방식 - 안정적)
 RUN cd /comfyui/custom_nodes && \
