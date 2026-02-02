@@ -1,7 +1,7 @@
 FROM runpod/worker-comfyui:5.6.0-base
 
-# SageAttention 빌드를 위한 시스템 의존성 설치
-RUN apt-get update && apt-get install -y gcc g++ python3-dev && \
+# SageAttention 빌드를 위한 시스템 의존성 설치 + curl for rclone download
+RUN apt-get update && apt-get install -y gcc g++ python3-dev curl && \
     rm -rf /var/lib/apt/lists/*
 
 # rclone 설치 (R2/S3 다운로드용)
