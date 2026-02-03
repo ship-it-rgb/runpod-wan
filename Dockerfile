@@ -9,10 +9,7 @@ RUN apt-get update && apt-get install -y \
     && rm rclone-current-linux-amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
-# ComfyUI 최신 버전으로 업데이트 (comfy_quant 지원 필수)
-RUN cd /comfyui && git pull origin master
-
-# PyTorch 2.9.x + CUDA 13.0 (Blackwell 최적화)
+# PyTorch 2.9.x + CUDA 13.0 (Blackwell fp8 안정성)
 RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu130 --force-reinstall
 
 # 커스텀 노드 설치 (git clone 방식 - 안정적)
