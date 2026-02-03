@@ -18,8 +18,8 @@ RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb \
     && dpkg -i rclone-current-linux-amd64.deb \
     && rm rclone-current-linux-amd64.deb
 
-# Install PyTorch for CUDA 12.8
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+# Install PyTorch for CUDA 13.0 (RTX 5090 Blackwell requires cu130)
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
