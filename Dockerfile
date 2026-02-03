@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir sageattention --no-build-isolation && \
     pip install --no-cache-dir deepdiff jsondiff PyWavelets ffmpeg websocket-client
 
 # Install custom nodes using comfy-cli
-# Requirement: Install 10 custom nodes (including frame interpolation for RIFE VFI)
+# Requirement: Install 9 custom nodes (including frame interpolation for RIFE VFI)
 RUN comfy node install comfyui-kjnodes && \
     comfy node install rgthree-comfy && \
     comfy node install comfyui_essentials && \
@@ -35,7 +35,6 @@ RUN comfy node install comfyui-kjnodes && \
     comfy node install comfyui-crystools && \
     comfy node install res4lyf && \
     comfy node install comfyui-custom-scripts && \
-    comfy node install comfyui-qwenvl && \
     comfy node install comfyui-frame-interpolation
 
 # Remove ComfyUI-Manager if it exists (as requested)
