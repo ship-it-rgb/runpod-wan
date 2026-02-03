@@ -1,16 +1,12 @@
 # RTX 5090 (Blackwell) 호환 베이스 이미지 - CUDA 12.8.1
 FROM runpod/worker-comfyui:5.6.0-base-cuda12.8.1
 
-# 시스템 패키지 설치
 RUN apt-get update && apt-get install -y \
     gcc g++ python3-dev curl aria2 \
     && curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb \
     && dpkg -i rclone-current-linux-amd64.deb \
     && rm rclone-current-linux-amd64.deb \
     && rm -rf /var/lib/apt/lists/*
-
-# PyTorch nightly + CUDA 12.8 (RunPod 드라이버 호환)
-RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128 --force-reinstall
 
 # 커스텀 노드 설치 (git clone 방식 - 안정적)
 RUN cd /comfyui/custom_nodes && \
@@ -32,8 +28,7 @@ RUN cd /comfyui/custom_nodes && \
         fi \
     done
 
-# Python 패키지 설치 (SageAttention Blackwell 호환)
-RUN pip install sageattention --no-build-isolation --force-reinstall
+RUN pip install sageattention --no-build-isolation
 RUN pip install deepdiff jsondiff PyWavelets ffmpeg-python
 
 # 설정 파일 및 핸들러 복사
