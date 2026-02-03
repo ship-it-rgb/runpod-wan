@@ -13,11 +13,12 @@ if [ -n "$R2_ACCESS_KEY" ] && [ -n "$R2_SECRET_KEY" ] && [ -n "$R2_ENDPOINT" ]; 
     cat > ~/.config/rclone/rclone.conf << EOF
 [r2]
 type = s3
-provider = Cloudflare
+provider = Other
 access_key_id = ${R2_ACCESS_KEY}
 secret_access_key = ${R2_SECRET_KEY}
 endpoint = ${R2_ENDPOINT}
 acl = private
+no_check_bucket = true
 EOF
     R2_CONFIGURED=true
 else
