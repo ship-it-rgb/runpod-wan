@@ -28,6 +28,16 @@ fi
 
 R2_BUCKET="${R2_BUCKET:-wan-models}"
 
+# === WORKAROUND: Copy rclone to avoid "Text file busy" error ===
+# Docker overlay filesystem on RunPod can lock binaries - copy to /tmp first
+if [ -f /usr/bin/rclone ]; then
+    cp /usr/bin/rclone /tmp/rclone
+    chmod +x /tmp/rclone
+    RCLONE_BIN="/tmp/rclone"
+else
+    RCLONE_BIN="rclone"
+fi
+
 # === DOWNLOAD FUNCTIONS ===
 download_from_r2() {
     local r2_path=$1
@@ -36,7 +46,7 @@ download_from_r2() {
     
     if [ "$R2_CONFIGURED" = "true" ] && [ ! -f "$local_path" ]; then
         echo "Downloading $name from R2..."
-        rclone copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
+        $RCLONE_BIN copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
             --transfers 16 --s3-chunk-size 64M --buffer-size 128M
         echo "✓ $name downloaded from R2"
     elif [ -f "$local_path" ]; then
