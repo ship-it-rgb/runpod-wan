@@ -12,7 +12,7 @@ COMFY_HOST = "127.0.0.1:8188"
 COMFY_API_URL = f"http://{COMFY_HOST}"
 
 # Workflow file path (inside the container)
-WORKFLOW_PATH = "/ComfyUI/workflows/wan_flf_i2v_api.json"
+WORKFLOW_PATH = "/comfyui/workflows/wan_flf_i2v_api.json"
 
 
 def wait_for_comfyui():
@@ -34,7 +34,7 @@ def wait_for_comfyui():
 def save_input_image(image_data, filename):
     """Save base64 image or download URL to ComfyUI input folder"""
     # Assuming standard ComfyUI container layout
-    input_path = f"/ComfyUI/input/{filename}"
+    input_path = f"/comfyui/input/{filename}"
 
     print(f"Saving input image to {input_path}...")
     try:
@@ -68,7 +68,7 @@ def queue_workflow(workflow, client_id):
         return None
 
 
-def wait_for_completion(prompt_id, client_id, timeout=600):
+def wait_for_completion(prompt_id, client_id, timeout=3600):
     """Wait for workflow completion via WebSocket"""
     ws_url = f"ws://{COMFY_HOST}/ws?clientId={client_id}"
     print(f"Connecting to WebSocket: {ws_url}")
@@ -132,9 +132,9 @@ def get_output_video(prompt_id):
                     filename = video_info.get("filename", "")
                     # Construct path - handling empty subfolder
                     if subfolder:
-                        video_path = f"/ComfyUI/output/{subfolder}/{filename}"
+                        video_path = f"/comfyui/output/{subfolder}/{filename}"
                     else:
-                        video_path = f"/ComfyUI/output/{filename}"
+                        video_path = f"/comfyui/output/{filename}"
                     print(f"Found output video: {video_path}")
                     return video_path
 
@@ -144,9 +144,9 @@ def get_output_video(prompt_id):
                     subfolder = video_info.get("subfolder", "")
                     filename = video_info.get("filename", "")
                     if subfolder:
-                        video_path = f"/ComfyUI/output/{subfolder}/{filename}"
+                        video_path = f"/comfyui/output/{subfolder}/{filename}"
                     else:
-                        video_path = f"/ComfyUI/output/{filename}"
+                        video_path = f"/comfyui/output/{filename}"
                     print(f"Found output video (videos key): {video_path}")
                     return video_path
 
@@ -228,7 +228,7 @@ def handler(job):
 
         # Cleanup input image (optional, but good practice)
         try:
-            os.remove(f"/ComfyUI/input/{image_filename}")
+            os.remove(f"/comfyui/input/{image_filename}")
         except:
             pass
 
