@@ -23,7 +23,7 @@ if [ -n "$R2_ACCESS_KEY" ] && [ -n "$R2_SECRET_KEY" ]; then
     cat > ~/.config/rclone/rclone.conf << EOF
 [wan-models]
 type = s3
-provider = Cloudflare
+provider = Other
 access_key_id = $R2_ACCESS_KEY
 secret_access_key = $R2_SECRET_KEY
 endpoint = $R2_ENDPOINT
@@ -41,7 +41,7 @@ fi
 # Start ComfyUI in background (port 8188)
 # Flags: --use-sage-attention --fast
 echo "Starting ComfyUI server..."
-python3 /comfyui/main.py --listen 0.0.0.0 --port 8188 --use-sage-attention --fast &
+python3 /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --use-sage-attention --fast &
 
 # Wait for ComfyUI to be ready
 echo "Waiting for ComfyUI to be ready..."

@@ -12,7 +12,7 @@ COMFY_HOST = "127.0.0.1:8188"
 COMFY_API_URL = f"http://{COMFY_HOST}"
 
 # Workflow file path (inside the container)
-WORKFLOW_PATH = "/comfyui/workflows/wan_flf_i2v_api.json"
+WORKFLOW_PATH = "/ComfyUI/workflows/wan_flf_i2v_api.json"
 
 
 def wait_for_comfyui():
