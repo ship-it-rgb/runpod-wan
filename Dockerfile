@@ -1,59 +1,66 @@
-# Use the specified RunPod ComfyUI base image
-FROM runpod/worker-comfyui:5.6.0-base
+# NVIDIA CUDA 12.8.0 Base Image (devel for compilation support)
+FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
-# Environment variables
+# Environment Variables - RTX 5090 is sm_120 (Blackwell architecture)
+ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
+ENV CUDA_HOME=/usr/local/cuda
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV FORCE_CUDA=1
 
-# Install system dependencies for SageAttention and other builds
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    python3-dev \
-    git \
-    wget \
-    aria2 \
-    ffmpeg \
-    rclone \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git python3-pip python3-dev ffmpeg ninja-build aria2 \
+    libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 curl \
+    build-essential rclone \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory to ComfyUI (base image uses /comfyui)
-WORKDIR /comfyui
+# Upgrade pip first
+RUN pip install --upgrade pip setuptools wheel
 
-# Install SageAttention and other Python dependencies
-# sageattention requires --no-build-isolation
-RUN pip install --no-cache-dir sageattention --no-build-isolation && \
-    pip install --no-cache-dir deepdiff jsondiff PyWavelets ffmpeg websocket-client
+# Install PyTorch 2.7.0 stable with CUDA 12.8 (official RTX 5090/Blackwell sm_120 support)
+RUN pip install torch==2.7.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
+    && pip cache purge
 
-# Install custom nodes using comfy-cli
-# Requirement: Install 9 custom nodes (including frame interpolation for RIFE VFI)
-RUN comfy node install comfyui-kjnodes && \
-    comfy node install rgthree-comfy && \
-    comfy node install comfyui_essentials && \
-    comfy node install comfyui-easy-use && \
-    comfy node install comfyui-videohelpersuites && \
-    comfy node install comfyui-crystools && \
-    comfy node install res4lyf && \
-    comfy node install comfyui-custom-scripts && \
-    comfy node install comfyui-frame-interpolation
+# Verify PyTorch CUDA version
+RUN python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
 
-# Remove ComfyUI-Manager if it exists (as requested)
-RUN rm -rf /comfyui/custom_nodes/ComfyUI-Manager
+# Clone ComfyUI
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
+WORKDIR /ComfyUI
+RUN pip install -r requirements.txt
 
-# Copy extra_model_paths.yaml to /comfyui/
-COPY extra_model_paths.yaml /comfyui/extra_model_paths.yaml
+# Install Custom Nodes
+WORKDIR /ComfyUI/custom_nodes
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git \
+    && git clone https://github.com/rgthree/rgthree-comfy.git \
+    && git clone https://github.com/cubiq/ComfyUI_essentials.git \
+    && git clone https://github.com/yolain/ComfyUI-Easy-Use.git \
+    && git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git \
+    && git clone https://github.com/crystian/ComfyUI-Crystools.git \
+    && git clone https://github.com/ClownsharkBatwing/RES4LYF.git \
+    && git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git \
+    && git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git
 
-# Copy start.sh and set executable
+# Install Custom Node Requirements
+RUN for dir in */; do \
+        if [ -f "$dir/requirements.txt" ]; then \
+            pip install -r "$dir/requirements.txt" || true; \
+        fi \
+    done
+
+# Install SageAttention (no-build-isolation) and other packages
+RUN pip install sageattention --no-build-isolation
+RUN pip install runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python
+
+# Copy files
+COPY extra_model_paths.yaml /ComfyUI/
 COPY start.sh /start.sh
+COPY rp_handler.py /rp_handler.py
+COPY workflows/ /ComfyUI/workflows/
+
+# Set permissions
 RUN chmod +x /start.sh
 
-# Copy rp_handler.py and workflows
-COPY rp_handler.py /rp_handler.py
-COPY workflows/ /comfyui/workflows/
-
-# Increase handler.py timeout using sed (Requirement: timeout=600 -> higher)
-# Note: rp_handler.py is used as the handler
-RUN sed -i 's/timeout=600/timeout=3600/g' /rp_handler.py
-
-# Set the entrypoint
-CMD ["/start.sh"]
+# Entrypoint
+ENTRYPOINT ["/start.sh"]
