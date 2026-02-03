@@ -13,8 +13,8 @@ elif [ -d "/workspace" ]; then
     MODEL_BASE="/workspace/models"
     mkdir -p $MODEL_BASE/{diffusion_models,text_encoders,vae,loras,clip_vision}
 else
-    echo "Neither /runpod-volume nor /workspace found. Defaulting to /models"
-    MODEL_BASE="/models"
+    echo "Neither /runpod-volume nor /workspace found. Using /ComfyUI/models"
+    MODEL_BASE="/ComfyUI/models"
     mkdir -p $MODEL_BASE/{diffusion_models,text_encoders,vae,loras,clip_vision}
 fi
 
