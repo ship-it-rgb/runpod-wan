@@ -1,8 +1,8 @@
-# RTX 5090 (Blackwell) Compatible Base Image - CUDA 12.8.0
+# NVIDIA CUDA 12.8.0 Base Image
 FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu24.04
 
 # Environment Variables
-ENV TORCH_CUDA_ARCH_LIST="12.0"
+ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0"
 ENV CUDA_HOME=/usr/local/cuda
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,8 +18,8 @@ RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb \
     && dpkg -i rclone-current-linux-amd64.deb \
     && rm rclone-current-linux-amd64.deb
 
-# Install PyTorch for CUDA 13.0 (RTX 5090 Blackwell requires cu130)
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+# Install PyTorch for CUDA 12.4
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
