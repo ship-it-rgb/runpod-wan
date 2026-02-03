@@ -47,7 +47,7 @@ download_from_r2() {
     if [ "$R2_CONFIGURED" = "true" ] && [ ! -f "$local_path" ]; then
         echo "Downloading $name from R2..."
         $RCLONE_BIN copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
-            --transfers 4 --s3-chunk-size 16M --buffer-size 16M
+            --transfers 1 --checkers 1
         echo "✓ $name downloaded from R2"
     elif [ -f "$local_path" ]; then
         echo "✓ $name already exists"
