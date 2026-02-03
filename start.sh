@@ -46,9 +46,13 @@ download_from_r2() {
     
     if [ "$R2_CONFIGURED" = "true" ] && [ ! -f "$local_path" ]; then
         echo "Downloading $name from R2..."
-        $RCLONE_BIN copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
-            --transfers 1 --checkers 1
-        echo "✓ $name downloaded from R2"
+        # Use simpler options to avoid Bus error on RunPod overlay filesystem
+        if $RCLONE_BIN copy "r2:${R2_BUCKET}/${r2_path}" "$(dirname "$local_path")" \
+            --transfers 1 --checkers 1 --retries 3 --low-level-retries 10 2>/dev/null; then
+            echo "✓ $name downloaded from R2"
+        else
+            echo "⚠ $name download from R2 failed (may retry or use alternative)"
+        fi
     elif [ -f "$local_path" ]; then
         echo "✓ $name already exists"
     fi
