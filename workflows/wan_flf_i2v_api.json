@@ -10,10 +10,7 @@
         0
       ]
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Positive Prompt)"
-    }
+    "class_type": "CLIPTextEncode"
   },
   "7": {
     "inputs": {
@@ -26,19 +23,13 @@
         0
       ]
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Negative Prompt)"
-    }
+    "class_type": "CLIPTextEncode"
   },
   "226": {
     "inputs": {
       "vae_name": "wan2.1_vae.safetensors"
     },
-    "class_type": "VAELoader",
-    "_meta": {
-      "title": "VAE 로드"
-    }
+    "class_type": "VAELoader"
   },
   "228": {
     "inputs": {
@@ -46,37 +37,25 @@
       "type": "wan",
       "device": "default"
     },
-    "class_type": "CLIPLoader",
-    "_meta": {
-      "title": "CLIP 로드"
-    }
+    "class_type": "CLIPLoader"
   },
   "246": {
     "inputs": {
-      "value": "she is smiling at camera. peaceful memory"
+      "value": "POSITIVE_PROMPT"
     },
-    "class_type": "PrimitiveStringMultiline",
-    "_meta": {
-      "title": "Positive Prompt (STRING)"
-    }
+    "class_type": "PrimitiveStringMultiline"
   },
   "247": {
     "inputs": {
-      "value": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容의，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走,"
+      "value": "NEGATIVE_PROMPT"
     },
-    "class_type": "PrimitiveStringMultiline",
-    "_meta": {
-      "title": "Negative Prompt (STRING)"
-    }
+    "class_type": "PrimitiveStringMultiline"
   },
   "260": {
     "inputs": {
-      "image": "Capture-2026-02-02-004003.png"
+      "image": "INPUT_IMAGE.png"
     },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "이미지 로드"
-    }
+    "class_type": "LoadImage"
   },
   "288": {
     "inputs": {
@@ -85,10 +64,7 @@
         0
       ]
     },
-    "class_type": "ModelPassThrough",
-    "_meta": {
-      "title": "ModelPass"
-    }
+    "class_type": "ModelPassThrough"
   },
   "290": {
     "inputs": {
@@ -97,10 +73,7 @@
         0
       ]
     },
-    "class_type": "ModelPassThrough",
-    "_meta": {
-      "title": "ModelPass"
-    }
+    "class_type": "ModelPassThrough"
   },
   "323": {
     "inputs": {
@@ -113,10 +86,7 @@
         0
       ]
     },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE 디코드"
-    }
+    "class_type": "VAEDecode"
   },
   "362": {
     "inputs": {
@@ -126,10 +96,7 @@
         0
       ]
     },
-    "class_type": "ModelSamplingSD3",
-    "_meta": {
-      "title": "모델 샘플링 (SD3)"
-    }
+    "class_type": "ModelSamplingSD3"
   },
   "363": {
     "inputs": {
@@ -139,25 +106,7 @@
         0
       ]
     },
-    "class_type": "ModelSamplingSD3",
-    "_meta": {
-      "title": "모델 샘플링 (SD3)"
-    }
-  },
-  "377": {
-    "inputs": {
-      "empty_cache": true,
-      "gc_collect": true,
-      "unload_all_models": false,
-      "any_input": [
-        "906",
-        0
-      ]
-    },
-    "class_type": "VRAM_Debug",
-    "_meta": {
-      "title": "VRAM Debug"
-    }
+    "class_type": "ModelSamplingSD3"
   },
   "392": {
     "inputs": {
@@ -168,10 +117,7 @@
         0
       ]
     },
-    "class_type": "PathchSageAttentionKJ",
-    "_meta": {
-      "title": "Patch Sage Attention KJ"
-    }
+    "class_type": "PathchSageAttentionKJ"
   },
   "393": {
     "inputs": {
@@ -182,10 +128,7 @@
         0
       ]
     },
-    "class_type": "PathchSageAttentionKJ",
-    "_meta": {
-      "title": "Patch Sage Attention KJ"
-    }
+    "class_type": "PathchSageAttentionKJ"
   },
   "481": {
     "inputs": {
@@ -219,32 +162,13 @@
         0
       ]
     },
-    "class_type": "WanFirstLastFrameToVideo",
-    "_meta": {
-      "title": "WAN 비디오 생성 (시작-끝 프레임)"
-    }
+    "class_type": "WanFirstLastFrameToVideo"
   },
   "834": {
     "inputs": {
       "value": -298171203950121
     },
-    "class_type": "PrimitiveInt",
-    "_meta": {
-      "title": "정수"
-    }
-  },
-  "846": {
-    "inputs": {
-      "text": "-160176384500197",
-      "anything": [
-        "834",
-        0
-      ]
-    },
-    "class_type": "easy showAnything",
-    "_meta": {
-      "title": "Show Any"
-    }
+    "class_type": "PrimitiveInt"
   },
   "904": {
     "inputs": {
@@ -259,10 +183,7 @@
         0
       ]
     },
-    "class_type": "RIFE VFI",
-    "_meta": {
-      "title": "RIFE VFI (recommend rife47 and rife49)"
-    }
+    "class_type": "RIFE VFI"
   },
   "906": {
     "inputs": {
@@ -281,30 +202,21 @@
         0
       ]
     },
-    "class_type": "VHS_VideoCombine",
-    "_meta": {
-      "title": "Video Combine 🎥🅥🅗🅢"
-    }
+    "class_type": "VHS_VideoCombine"
   },
   "907": {
     "inputs": {
       "unet_name": "DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors",
       "weight_dtype": "default"
     },
-    "class_type": "UNETLoader",
-    "_meta": {
-      "title": "확산 모델 로드"
-    }
+    "class_type": "UNETLoader"
   },
   "908": {
     "inputs": {
       "unet_name": "smoothMix_v2_WAN2.2_I2V_14B_High_fp8.safetensors",
       "weight_dtype": "default"
     },
-    "class_type": "UNETLoader",
-    "_meta": {
-      "title": "확산 모델 로드"
-    }
+    "class_type": "UNETLoader"
   },
   "910": {
     "inputs": {
@@ -315,19 +227,13 @@
         0
       ]
     },
-    "class_type": "LoraLoaderModelOnly",
-    "_meta": {
-      "title": "LoRA 로드 (모델 전용)"
-    }
+    "class_type": "LoraLoaderModelOnly"
   },
   "500:16": {
     "inputs": {
       "value": 16
     },
-    "class_type": "FloatConstant",
-    "_meta": {
-      "title": "Float Constant"
-    }
+    "class_type": "FloatConstant"
   },
   "500:23": {
     "inputs": {
@@ -342,10 +248,7 @@
       ],
       "crop": "center"
     },
-    "class_type": "ImageScale",
-    "_meta": {
-      "title": "Upscale Image - L"
-    }
+    "class_type": "ImageScale"
   },
   "500:15": {
     "inputs": {
@@ -359,10 +262,7 @@
         0
       ]
     },
-    "class_type": "ImageScaleBy",
-    "_meta": {
-      "title": "이미지 확대 비율"
-    }
+    "class_type": "ImageScaleBy"
   },
   "500:3": {
     "inputs": {
@@ -371,10 +271,7 @@
         0
       ]
     },
-    "class_type": "GetImageSize",
-    "_meta": {
-      "title": "이미지 크기 가져오기"
-    }
+    "class_type": "GetImageSize"
   },
   "500:1": {
     "inputs": {
@@ -383,19 +280,13 @@
       "batch_size": 1,
       "color": 0
     },
-    "class_type": "EmptyImage",
-    "_meta": {
-      "title": "빈 이미지"
-    }
+    "class_type": "EmptyImage"
   },
   "500:22": {
     "inputs": {
       "value": 81
     },
-    "class_type": "INTConstant",
-    "_meta": {
-      "title": "LENGTH"
-    }
+    "class_type": "INTConstant"
   },
   "500:20": {
     "inputs": {
@@ -414,10 +305,7 @@
         0
       ]
     },
-    "class_type": "ImageScale",
-    "_meta": {
-      "title": "Upscale Image - F"
-    }
+    "class_type": "ImageScale"
   },
   "500:2": {
     "inputs": {
@@ -431,19 +319,13 @@
         0
       ]
     },
-    "class_type": "ImageScaleBy",
-    "_meta": {
-      "title": "이미지 확대 비율"
-    }
+    "class_type": "ImageScaleBy"
   },
   "500:11": {
     "inputs": {
       "value": 0.0625
     },
-    "class_type": "FloatConstant",
-    "_meta": {
-      "title": "Float Constant"
-    }
+    "class_type": "FloatConstant"
   },
   "500:12": {
     "inputs": {
@@ -454,10 +336,7 @@
         0
       ]
     },
-    "class_type": "ImageScaleBy",
-    "_meta": {
-      "title": "이미지 확대 비율"
-    }
+    "class_type": "ImageScaleBy"
   },
   "500:18": {
     "inputs": {
@@ -466,10 +345,7 @@
         0
       ]
     },
-    "class_type": "GetImageSize",
-    "_meta": {
-      "title": "이미지 크기 가져오기"
-    }
+    "class_type": "GetImageSize"
   },
   "420:11": {
     "inputs": {
@@ -482,10 +358,7 @@
         0
       ]
     },
-    "class_type": "BasicGuider",
-    "_meta": {
-      "title": "기본 가이드"
-    }
+    "class_type": "BasicGuider"
   },
   "420:10": {
     "inputs": {
@@ -497,10 +370,7 @@
         0
       ]
     },
-    "class_type": "BetaSamplingScheduler",
-    "_meta": {
-      "title": "베타 샘플링 스케줄러"
-    }
+    "class_type": "BetaSamplingScheduler"
   },
   "420:4": {
     "inputs": {
@@ -509,10 +379,7 @@
         0
       ]
     },
-    "class_type": "RandomNoise",
-    "_meta": {
-      "title": "무작위 노이즈"
-    }
+    "class_type": "RandomNoise"
   },
   "420:9": {
     "inputs": {
@@ -522,10 +389,7 @@
         0
       ]
     },
-    "class_type": "SplitSigmas",
-    "_meta": {
-      "title": "시그마 배열 분할 (스텝)"
-    }
+    "class_type": "SplitSigmas"
   },
   "420:2": {
     "inputs": {
@@ -545,19 +409,13 @@
         1
       ]
     },
-    "class_type": "ScheduledCFGGuidance",
-    "_meta": {
-      "title": "Scheduled CFG Guidance"
-    }
+    "class_type": "ScheduledCFGGuidance"
   },
   "420:8": {
     "inputs": {
       "sampler_name": "res_multistep"
     },
-    "class_type": "KSamplerSelect",
-    "_meta": {
-      "title": "KSampler (선택)"
-    }
+    "class_type": "KSamplerSelect"
   },
   "420:13": {
     "inputs": {
@@ -582,17 +440,11 @@
         0
       ]
     },
-    "class_type": "SamplerCustomAdvanced",
-    "_meta": {
-      "title": "LowNoiseSampler"
-    }
+    "class_type": "SamplerCustomAdvanced"
   },
   "420:5": {
     "inputs": {},
-    "class_type": "DisableNoise",
-    "_meta": {
-      "title": "노이즈 비활성화"
-    }
+    "class_type": "DisableNoise"
   },
   "420:12": {
     "inputs": {
@@ -617,9 +469,6 @@
         2
       ]
     },
-    "class_type": "SamplerCustomAdvanced",
-    "_meta": {
-      "title": "HighNoiseSampler"
-    }
+    "class_type": "SamplerCustomAdvanced"
   }
 }
