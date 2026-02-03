@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
     && rm rclone-current-linux-amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
-# PyTorch 2.9.x + CUDA 13.0 (Blackwell fp8 안정성)
-RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu130 --force-reinstall
+# PyTorch nightly + CUDA 12.8 (RunPod 드라이버 호환)
+RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128 --force-reinstall
 
 # 커스텀 노드 설치 (git clone 방식 - 안정적)
 RUN cd /comfyui/custom_nodes && \
