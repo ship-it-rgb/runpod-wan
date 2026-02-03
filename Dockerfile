@@ -1,3 +1,5 @@
+# ⚠️ WARNING: DO NOT CHANGE BASE IMAGE - RTX 5090 REQUIRES CUDA 12.8+
+# See .sisyphus/notepads/runpod-wan-serverless/CRITICAL_REQUIREMENTS.md
 # NVIDIA CUDA 12.8.0 Base Image (devel for compilation support)
 FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
