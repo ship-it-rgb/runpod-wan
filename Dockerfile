@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     aria2 \
     ffmpeg \
+    rclone \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set working directory to ComfyUI (base image uses /comfyui)
@@ -22,10 +23,10 @@ WORKDIR /comfyui
 # Install SageAttention and other Python dependencies
 # sageattention requires --no-build-isolation
 RUN pip install --no-cache-dir sageattention --no-build-isolation && \
-    pip install --no-cache-dir deepdiff jsondiff PyWavelets ffmpeg
+    pip install --no-cache-dir deepdiff jsondiff PyWavelets ffmpeg websocket-client
 
 # Install custom nodes using comfy-cli
-# Requirement: Install 9 custom nodes
+# Requirement: Install 10 custom nodes (including frame interpolation for RIFE VFI)
 RUN comfy node install comfyui-kjnodes && \
     comfy node install rgthree-comfy && \
     comfy node install comfyui_essentials && \
@@ -34,7 +35,8 @@ RUN comfy node install comfyui-kjnodes && \
     comfy node install comfyui-crystools && \
     comfy node install res4lyf && \
     comfy node install comfyui-custom-scripts && \
-    comfy node install comfyui-qwenvl
+    comfy node install comfyui-qwenvl && \
+    comfy node install comfyui-frame-interpolation
 
 # Remove ComfyUI-Manager if it exists (as requested)
 RUN rm -rf /comfyui/custom_nodes/ComfyUI-Manager
