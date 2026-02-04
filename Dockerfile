@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip first
 RUN pip install --upgrade pip setuptools wheel
 
-# Install PyTorch 2.6.0 with CUDA 12.6 (Stable)
-RUN pip install torch==2.6.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126 \
+# Install PyTorch 2.7.0 stable with CUDA 12.8 (official RTX 5090/Blackwell sm_120 support)
+RUN pip install torch==2.7.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
     && pip cache purge
 
 # Verify PyTorch CUDA version
