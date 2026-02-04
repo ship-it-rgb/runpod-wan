@@ -189,7 +189,7 @@
     "inputs": {
       "frame_rate": 24,
       "loop_count": 0,
-      "filename_prefix": "26-02-02/interpole",
+      "filename_prefix": "yymmdd",
       "format": "video/h264-mp4",
       "pix_fmt": "yuv420p",
       "crf": 15,
@@ -206,7 +206,7 @@
   },
   "907": {
     "inputs": {
-      "unet_name": "DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors",
+      "unet_name": "DasiwaWAN22I2V14BLightspeed_synthseductionLowV9.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader"
