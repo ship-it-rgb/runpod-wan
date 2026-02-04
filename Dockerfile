@@ -7,6 +7,7 @@ FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 # SageAttention checks for 12.0/12.1 in TORCH_CUDA_ARCH_LIST to enable sm120a build
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
 ENV CUDA_HOME=/usr/local/cuda
+ENV MAX_JOBS=4
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FORCE_CUDA=1
@@ -53,7 +54,7 @@ RUN for dir in */; do \
     done
 
 # Install SageAttention 2.2.0 with Blackwell (RTX 5090) support
-RUN pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
+RUN pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation -v
 RUN pip install runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python
 
 # Copy files
