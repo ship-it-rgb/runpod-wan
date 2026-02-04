@@ -34,7 +34,7 @@ def wait_for_comfyui():
 def save_input_image(image_data, filename):
     """Save base64 image or download URL to ComfyUI input folder"""
     # Assuming standard ComfyUI container layout
-    input_path = f"/comfyui/input/{filename}"
+    input_path = f"/ComfyUI/input/{filename}"
 
     print(f"Saving input image to {input_path}...")
     try:
@@ -132,9 +132,9 @@ def get_output_video(prompt_id):
                     filename = video_info.get("filename", "")
                     # Construct path - handling empty subfolder
                     if subfolder:
-                        video_path = f"/comfyui/output/{subfolder}/{filename}"
+                        video_path = f"/ComfyUI/output/{subfolder}/{filename}"
                     else:
-                        video_path = f"/comfyui/output/{filename}"
+                        video_path = f"/ComfyUI/output/{filename}"
                     print(f"Found output video: {video_path}")
                     return video_path
 
@@ -144,9 +144,9 @@ def get_output_video(prompt_id):
                     subfolder = video_info.get("subfolder", "")
                     filename = video_info.get("filename", "")
                     if subfolder:
-                        video_path = f"/comfyui/output/{subfolder}/{filename}"
+                        video_path = f"/ComfyUI/output/{subfolder}/{filename}"
                     else:
-                        video_path = f"/comfyui/output/{filename}"
+                        video_path = f"/ComfyUI/output/{filename}"
                     print(f"Found output video (videos key): {video_path}")
                     return video_path
 
