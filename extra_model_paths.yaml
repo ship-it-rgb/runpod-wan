@@ -1,14 +1,10 @@
-# extra_model_paths.yaml for ComfyUI Wan2.1/2.2 Setup
-# Supports both RunPod Pods (/workspace) and Serverless (/runpod-volume)
-
-# Pod mode paths (uses /workspace which is typically symlinked to network volume)
+# Pod mode paths (uses /runpod-volume which is typically symlinked to network volume)
 workspace:
-  base_path: /workspace/models
+  base_path: /runpod-volume/models
   diffusion_models: diffusion_models
   text_encoders: text_encoders
   vae: vae
   loras: loras
-  clip_vision: clip_vision
 
 # Serverless mode paths (direct network volume mount)
 runpod_volume:
@@ -17,4 +13,3 @@ runpod_volume:
   text_encoders: text_encoders
   vae: vae
   loras: loras
-  clip_vision: clip_vision
