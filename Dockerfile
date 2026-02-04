@@ -4,6 +4,7 @@
 FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
 # Environment Variables - RTX 5090 is sm_120 (Blackwell architecture)
+# SageAttention checks for 12.0/12.1 in TORCH_CUDA_ARCH_LIST to enable sm120a build
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
 ENV CUDA_HOME=/usr/local/cuda
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
