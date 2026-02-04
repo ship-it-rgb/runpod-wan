@@ -58,7 +58,7 @@ wait
 echo "--- All models ready ---"
 
 echo "--- Starting ComfyUI server ---"
-python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --use-sage-attention --fast fp16_accumulation &
+python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --fast fp16_accumulation &
 
 # Wait for server to be ready
 sleep 10

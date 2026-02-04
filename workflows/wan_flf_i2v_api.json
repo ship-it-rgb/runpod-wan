@@ -110,7 +110,7 @@
   },
   "392": {
     "inputs": {
-      "sage_attention": "auto",
+      "sage_attention": "disable",
       "allow_compile": false,
       "model": [
         "910",
@@ -121,7 +121,7 @@
   },
   "393": {
     "inputs": {
-      "sage_attention": "auto",
+      "sage_attention": "disable",
       "allow_compile": false,
       "model": [
         "907",
