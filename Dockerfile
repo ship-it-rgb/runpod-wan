@@ -20,11 +20,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip first
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Install PyTorch 2.7.0 stable with CUDA 12.8 (official RTX 5090/Blackwell sm_120 support)
-RUN pip install torch==2.7.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
-    && pip cache purge
+# Split into separate layers to reduce memory pressure during pip install
+# Using --no-cache-dir to minimize disk/memory usage
+RUN pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu128
+RUN pip install --no-cache-dir torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 
 # Verify PyTorch CUDA version
 RUN python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
@@ -32,7 +34,7 @@ RUN python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CU
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
 WORKDIR /ComfyUI
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install Custom Nodes
 WORKDIR /ComfyUI/custom_nodes
@@ -49,13 +51,13 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git \
 # Install Custom Node Requirements
 RUN for dir in */; do \
         if [ -f "$dir/requirements.txt" ]; then \
-            pip install -r "$dir/requirements.txt" || true; \
+            pip install --no-cache-dir -r "$dir/requirements.txt" || true; \
         fi \
     done
 
 # Install SageAttention 2.2.0 with Blackwell (RTX 5090) support
-RUN pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation -v
-RUN pip install runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python
+RUN pip install --no-cache-dir "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation -v
+RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python
 
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
