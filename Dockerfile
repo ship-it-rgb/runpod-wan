@@ -5,7 +5,7 @@ FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
 # Environment Variables for SageAttention compilation
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
 ENV CUDA_HOME=/usr/local/cuda
-ENV MAX_JOBS=4
+ENV MAX_JOBS=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FORCE_CUDA=1
 
