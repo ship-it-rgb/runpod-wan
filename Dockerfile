@@ -43,6 +43,10 @@ RUN for dir in */; do \
 # Install additional Python packages
 RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton
 
+# Install SageAttention (using --no-build-isolation to use container's torch/cuda headers)
+# This allows automatic architecture detection for Blackwell (sm_120)
+RUN pip install sageattention --no-build-isolation
+
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
 COPY start.sh /start.sh
