@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunPod WAN Video Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --accent-color: #e94560;
+            --text-main: #f0f0f5;
+            --text-muted: #94a3b8;
+            --border-color: #2a2a4a;
+            --input-bg: #0f172a;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* API Key Section */
+        .settings-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input[type="password"],
+        textarea {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.2);
+        }
+
+        /* Upload Section */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--accent-color);
+            background-color: rgba(233, 69, 96, 0.05);
+        }
+
+        .upload-zone p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        #image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* Input Controls */
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .collapsible {
+            margin-top: 1rem;
+        }
+
+        .collapsible-trigger {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .collapsible-content {
+            display: none;
+            padding-top: 0.5rem;
+        }
+
+        .collapsible-content.show {
+            display: block;
+        }
+
+        /* Button */
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        /* Status & Output */
+        .status-container {
+            display: none;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(233, 69, 96, 0.1);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #status-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .output-container {
+            display: none;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        video {
+            width: 100%;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            background-color: black;
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .hidden { display: none !important; }
+
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>RunPod WAN Video Generator</h1>
+
+    <div class="container">
+        <!-- Settings -->
+        <div class="card">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Endpoint Settings
+            </div>
+            <div class="settings-grid">
+                <label for="api-key">RunPod API Key</label>
+                <input type="password" id="api-key" placeholder="Enter your rpa-..." autocomplete="current-password">
+                <p style="font-size: 0.75rem; color: var(--text-muted);">Stored securely in your browser's localStorage.</p>
+            </div>
+        </div>
+
+        <!-- Inputs -->
+        <div class="card">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Image to Video
+            </div>
+            
+            <input type="file" id="file-input" class="hidden" accept="image/*">
+            <div class="upload-zone" id="drop-zone">
+                <div id="upload-prompt">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-color); margin-bottom: 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p>Click to upload or drag & drop an image</p>
+                </div>
+                <img id="image-preview" alt="Preview">
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <label for="prompt">Prompt</label>
+                <textarea id="prompt" placeholder="Describe the motion or scene..."></textarea>
+            </div>
+
+            <div class="collapsible">
+                <button class="collapsible-trigger" id="neg-trigger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    Advanced: Negative Prompt
+                </button>
+                <div class="collapsible-content" id="neg-content">
+                    <textarea id="negative-prompt">色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走</textarea>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-box"></div>
+
+            <button class="btn" id="generate-btn" style="margin-top: 1.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Generate Video
+            </button>
+        </div>
+
+        <!-- Status -->
+        <div class="card status-container" id="status-card">
+            <div class="loader"></div>
+            <div id="status-text">Starting generation...</div>
+        </div>
+
+        <!-- Result -->
+        <div class="card output-container" id="output-card">
+            <div class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.6 11.6L22 7v10l-6.4-4.5v4.5H2V7h13.6v4.6z"/></svg>
+                Generated Video
+            </div>
+            <video id="video-player" controls></video>
+            <button class="btn btn-secondary" id="download-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Video
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const endpointId = 'rsqkwxcyar9hsk';
+        const apiBase = `https://api.runpod.ai/v2/${endpointId}`;
+
+        // DOM Elements
+        const apiKeyInput = document.getElementById('api-key');
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const promptInput = document.getElementById('prompt');
+        const negativePromptInput = document.getElementById('negative-prompt');
+        const generateBtn = document.getElementById('generate-btn');
+        const statusCard = document.getElementById('status-card');
+        const statusText = document.getElementById('status-text');
+        const outputCard = document.getElementById('output-card');
+        const videoPlayer = document.getElementById('video-player');
+        const downloadBtn = document.getElementById('download-btn');
+        const errorBox = document.getElementById('error-box');
+        const negTrigger = document.getElementById('neg-trigger');
+        const negContent = document.getElementById('neg-content');
+
+        let base64Image = null;
+        let pollingInterval = null;
+
+        // Load saved API Key
+        apiKeyInput.value = localStorage.getItem('runpod_api_key') || '';
+        apiKeyInput.addEventListener('input', (e) => {
+            localStorage.setItem('runpod_api_key', e.target.value);
+        });
+
+        // Collapsible
+        negTrigger.addEventListener('click', () => {
+            negContent.classList.toggle('show');
+            const icon = negTrigger.querySelector('svg');
+            icon.style.transform = negContent.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+        });
+
+        // File Upload Logic
+        dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload an image file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                base64Image = e.target.result;
+                imagePreview.src = base64Image;
+                imagePreview.style.display = 'block';
+                uploadPrompt.style.display = 'none';
+                errorBox.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+            statusCard.style.display = 'none';
+            generateBtn.disabled = false;
+        }
+
+        // API Logic
+        generateBtn.addEventListener('click', async () => {
+            const apiKey = apiKeyInput.value.trim();
+            const prompt = promptInput.value.trim();
+            const negativePrompt = negativePromptInput.value.trim();
+
+            if (!apiKey) return showError('API Key is required.');
+            if (!base64Image) return showError('Please upload an image.');
+            if (!prompt) return showError('Prompt is required.');
+
+            errorBox.style.display = 'none';
+            generateBtn.disabled = true;
+            statusCard.style.display = 'block';
+            outputCard.style.display = 'none';
+            statusText.textContent = 'Submitting job...';
+
+            try {
+                // Remove prefix from base64 if it exists (RunPod usually wants the raw base64 or with prefix? 
+                // Context says "base64 encoded image". I'll keep the prefix as it's common for data-uris, 
+                // but if the backend expects just raw, I'll strip it. The prompt example says "base64...".
+                // Usually they want the raw base64 without "data:image/png;base64,").
+                const rawBase64 = base64Image.split(',')[1];
+
+                const response = await fetch(`${apiBase}/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            start_image: rawBase64,
+                            prompt: prompt,
+                            negative_prompt: negativePrompt
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const jobId = data.id;
+                
+                statusText.textContent = 'Job queued... (ID: ' + jobId + ')';
+                startPolling(jobId, apiKey);
+
+            } catch (err) {
+                showError('Error: ' + err.message);
+            }
+        });
+
+        function startPolling(jobId, apiKey) {
+            if (pollingInterval) clearInterval(pollingInterval);
+
+            pollingInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${apiBase}/status/${jobId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Polling failed');
+
+                    const data = await response.json();
+                    
+                    if (data.status === 'COMPLETED') {
+                        clearInterval(pollingInterval);
+                        handleSuccess(data.output);
+                    } else if (data.status === 'FAILED') {
+                        clearInterval(pollingInterval);
+                        showError('Job failed: ' + (data.error || 'Unknown error'));
+                    } else {
+                        statusText.textContent = `Status: ${data.status}...`;
+                    }
+
+                } catch (err) {
+                    clearInterval(pollingInterval);
+                    showError('Polling error: ' + err.message);
+                }
+            }, 2000);
+        }
+
+        function handleSuccess(output) {
+            statusCard.style.display = 'none';
+            generateBtn.disabled = false;
+            
+            if (output && output.video) {
+                // Video is base64
+                const videoBase64 = output.video;
+                // Some base64 might have prefix or not. Assuming raw base64 from backend.
+                const videoSrc = videoBase64.startsWith('data:') ? videoBase64 : `data:video/mp4;base64,${videoBase64}`;
+                
+                videoPlayer.src = videoSrc;
+                outputCard.style.display = 'block';
+
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = videoSrc;
+                    link.download = `wan-video-${Date.now()}.mp4`;
+                    link.click();
+                };
+
+                videoPlayer.play();
+            } else {
+                showError('Output received but no video data found.');
+            }
+        }
+    </script>
+</body>
+</html>
