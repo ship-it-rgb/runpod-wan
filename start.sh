@@ -118,10 +118,5 @@ python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --fast fp16_accumulatio
 
 sleep 10
 
-if [ "$RUNPOD_SERVERLESS" = "true" ]; then
-    echo "--- Serverless mode: Starting handler ---"
-    python -u /rp_handler.py
-else
-    echo "--- Pod mode: Keeping container alive ---"
-    wait
-fi
+echo "--- Starting RunPod handler ---"
+python -u /rp_handler.py
