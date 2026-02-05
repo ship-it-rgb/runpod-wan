@@ -1,17 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "--- Installing SageAttention ---"
-if ! python -c "import sageattention" 2>/dev/null; then
-    echo "Building SageAttention with Blackwell support..."
-    export TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
-    export FORCE_CUDA=1
-    pip install --no-cache-dir "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
-    echo "✓ SageAttention installed"
-else
-    echo "✓ SageAttention already installed"
-fi
-
 echo "--- Setting up models ---"
 
 # Create model directories
@@ -69,7 +58,7 @@ wait
 echo "--- All models ready ---"
 
 echo "--- Starting ComfyUI server ---"
-python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --use-sage-attention --fast fp16_accumulation &
+python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --fast fp16_accumulation &
 
 # Wait for server to be ready
 sleep 10

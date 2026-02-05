@@ -1,13 +1,10 @@
-# PyTorch 2.7.0 + CUDA 12.8 + cuDNN9 (devel for SageAttention compilation)
+# PyTorch 2.7.0 + CUDA 12.8 + cuDNN9 (devel for CUDA compilation)
 # RTX 5090 (Blackwell sm_120) officially supported
 FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
 
-# Environment Variables for SageAttention compilation
-ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
+# Environment Variables
 ENV CUDA_HOME=/usr/local/cuda
-ENV MAX_JOBS=1
 ENV DEBIAN_FRONTEND=noninteractive
-ENV FORCE_CUDA=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -43,7 +40,7 @@ RUN for dir in */; do \
         fi \
     done
 
-# SageAttention is installed at runtime (start.sh) due to OOM during GitHub Actions build
+# Install additional Python packages
 RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton
 
 # Copy files
