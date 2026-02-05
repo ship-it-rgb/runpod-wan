@@ -1,27 +1,15 @@
 {
   "6": {
     "inputs": {
-      "text": [
-        "246",
-        0
-      ],
-      "clip": [
-        "228",
-        0
-      ]
+      "text": ["246", 0],
+      "clip": ["228", 0]
     },
     "class_type": "CLIPTextEncode"
   },
   "7": {
     "inputs": {
-      "text": [
-        "247",
-        0
-      ],
-      "clip": [
-        "228",
-        0
-      ]
+      "text": ["247", 0],
+      "clip": ["228", 0]
     },
     "class_type": "CLIPTextEncode"
   },
@@ -59,114 +47,53 @@
   },
   "288": {
     "inputs": {
-      "model": [
-        "393",
-        0
-      ]
+      "model": ["907", 0]
     },
     "class_type": "ModelPassThrough"
   },
   "290": {
     "inputs": {
-      "model": [
-        "392",
-        0
-      ]
+      "model": ["910", 0]
     },
     "class_type": "ModelPassThrough"
   },
   "323": {
     "inputs": {
-      "samples": [
-        "420:13",
-        0
-      ],
-      "vae": [
-        "226",
-        0
-      ]
+      "samples": ["420:13", 0],
+      "vae": ["226", 0]
     },
     "class_type": "VAEDecode"
   },
   "362": {
     "inputs": {
-      "shift": 3,
-      "model": [
-        "288",
-        0
-      ]
+      "shift": 5,
+      "model": ["288", 0]
     },
     "class_type": "ModelSamplingSD3"
   },
   "363": {
     "inputs": {
-      "shift": 3,
-      "model": [
-        "290",
-        0
-      ]
+      "shift": 5,
+      "model": ["290", 0]
     },
     "class_type": "ModelSamplingSD3"
   },
-  "392": {
-    "inputs": {
-      "sage_attention": "auto",
-      "allow_compile": false,
-      "model": [
-        "910",
-        0
-      ]
-    },
-    "class_type": "PathchSageAttentionKJ"
-  },
-  "393": {
-    "inputs": {
-      "sage_attention": "auto",
-      "allow_compile": false,
-      "model": [
-        "907",
-        0
-      ]
-    },
-    "class_type": "PathchSageAttentionKJ"
-  },
   "481": {
     "inputs": {
-      "width": [
-        "500:3",
-        0
-      ],
-      "height": [
-        "500:3",
-        1
-      ],
-      "length": [
-        "500:22",
-        0
-      ],
+      "width": ["500:3", 0],
+      "height": ["500:3", 1],
+      "length": ["500:22", 0],
       "batch_size": 1,
-      "positive": [
-        "6",
-        0
-      ],
-      "negative": [
-        "7",
-        0
-      ],
-      "vae": [
-        "226",
-        0
-      ],
-      "start_image": [
-        "500:20",
-        0
-      ]
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "vae": ["226", 0],
+      "start_image": ["500:20", 0]
     },
     "class_type": "WanFirstLastFrameToVideo"
   },
   "834": {
     "inputs": {
-      "value": -298171203950121
+      "value": -668993342477901
     },
     "class_type": "PrimitiveInt"
   },
@@ -178,10 +105,7 @@
       "fast_mode": true,
       "ensemble": true,
       "scale_factor": 1,
-      "frames": [
-        "323",
-        0
-      ]
+      "frames": ["323", 0]
     },
     "class_type": "RIFE VFI"
   },
@@ -189,7 +113,7 @@
     "inputs": {
       "frame_rate": 24,
       "loop_count": 0,
-      "filename_prefix": "yymmdd",
+      "filename_prefix": "output",
       "format": "video/h264-mp4",
       "pix_fmt": "yuv420p",
       "crf": 15,
@@ -197,16 +121,13 @@
       "trim_to_audio": false,
       "pingpong": false,
       "save_output": true,
-      "images": [
-        "904",
-        0
-      ]
+      "images": ["904", 0]
     },
     "class_type": "VHS_VideoCombine"
   },
   "907": {
     "inputs": {
-      "unet_name": "DasiwaWAN22I2V14BLightspeed_synthseductionLowV9.safetensors",
+      "unet_name": "DaSiWa_v9_WAN2.2_I2V_14B_Low_fp8.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader"
@@ -222,10 +143,7 @@
     "inputs": {
       "lora_name": "WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors",
       "strength_model": 3,
-      "model": [
-        "908",
-        0
-      ]
+      "model": ["908", 0]
     },
     "class_type": "LoraLoaderModelOnly"
   },
@@ -238,14 +156,8 @@
   "500:23": {
     "inputs": {
       "upscale_method": "lanczos",
-      "width": [
-        "500:18",
-        0
-      ],
-      "height": [
-        "500:18",
-        1
-      ],
+      "width": ["500:18", 0],
+      "height": ["500:18", 1],
       "crop": "center"
     },
     "class_type": "ImageScale"
@@ -253,23 +165,14 @@
   "500:15": {
     "inputs": {
       "upscale_method": "nearest-exact",
-      "scale_by": [
-        "500:16",
-        0
-      ],
-      "image": [
-        "500:2",
-        0
-      ]
+      "scale_by": ["500:16", 0],
+      "image": ["500:2", 0]
     },
     "class_type": "ImageScaleBy"
   },
   "500:3": {
     "inputs": {
-      "image": [
-        "500:15",
-        0
-      ]
+      "image": ["500:15", 0]
     },
     "class_type": "GetImageSize"
   },
@@ -291,33 +194,18 @@
   "500:20": {
     "inputs": {
       "upscale_method": "lanczos",
-      "width": [
-        "500:18",
-        0
-      ],
-      "height": [
-        "500:18",
-        1
-      ],
+      "width": ["500:18", 0],
+      "height": ["500:18", 1],
       "crop": "center",
-      "image": [
-        "260",
-        0
-      ]
+      "image": ["260", 0]
     },
     "class_type": "ImageScale"
   },
   "500:2": {
     "inputs": {
       "upscale_method": "nearest-exact",
-      "scale_by": [
-        "500:11",
-        0
-      ],
-      "image": [
-        "500:1",
-        0
-      ]
+      "scale_by": ["500:11", 0],
+      "image": ["500:1", 0]
     },
     "class_type": "ImageScaleBy"
   },
@@ -331,32 +219,20 @@
     "inputs": {
       "upscale_method": "nearest-exact",
       "scale_by": 1,
-      "image": [
-        "500:15",
-        0
-      ]
+      "image": ["500:15", 0]
     },
     "class_type": "ImageScaleBy"
   },
   "500:18": {
     "inputs": {
-      "image": [
-        "500:12",
-        0
-      ]
+      "image": ["500:12", 0]
     },
     "class_type": "GetImageSize"
   },
   "420:11": {
     "inputs": {
-      "model": [
-        "362",
-        0
-      ],
-      "conditioning": [
-        "481",
-        0
-      ]
+      "model": ["362", 0],
+      "conditioning": ["481", 0]
     },
     "class_type": "BasicGuider"
   },
@@ -365,29 +241,20 @@
       "steps": 6,
       "alpha": 0.8,
       "beta": 0.8,
-      "model": [
-        "363",
-        0
-      ]
+      "model": ["363", 0]
     },
     "class_type": "BetaSamplingScheduler"
   },
   "420:4": {
     "inputs": {
-      "noise_seed": [
-        "834",
-        0
-      ]
+      "noise_seed": ["834", 0]
     },
     "class_type": "RandomNoise"
   },
   "420:9": {
     "inputs": {
       "step": 3,
-      "sigmas": [
-        "420:10",
-        0
-      ]
+      "sigmas": ["420:10", 0]
     },
     "class_type": "SplitSigmas"
   },
@@ -396,18 +263,9 @@
       "cfg": 1,
       "start_percent": 0,
       "end_percent": 0.5,
-      "model": [
-        "363",
-        0
-      ],
-      "positive": [
-        "481",
-        0
-      ],
-      "negative": [
-        "481",
-        1
-      ]
+      "model": ["363", 0],
+      "positive": ["481", 0],
+      "negative": ["481", 1]
     },
     "class_type": "ScheduledCFGGuidance"
   },
@@ -419,26 +277,11 @@
   },
   "420:13": {
     "inputs": {
-      "noise": [
-        "420:5",
-        0
-      ],
-      "guider": [
-        "420:11",
-        0
-      ],
-      "sampler": [
-        "420:8",
-        0
-      ],
-      "sigmas": [
-        "420:9",
-        1
-      ],
-      "latent_image": [
-        "420:12",
-        0
-      ]
+      "noise": ["420:5", 0],
+      "guider": ["420:11", 0],
+      "sampler": ["420:8", 0],
+      "sigmas": ["420:9", 1],
+      "latent_image": ["420:12", 0]
     },
     "class_type": "SamplerCustomAdvanced"
   },
@@ -448,26 +291,11 @@
   },
   "420:12": {
     "inputs": {
-      "noise": [
-        "420:4",
-        0
-      ],
-      "guider": [
-        "420:2",
-        0
-      ],
-      "sampler": [
-        "420:8",
-        0
-      ],
-      "sigmas": [
-        "420:9",
-        0
-      ],
-      "latent_image": [
-        "481",
-        2
-      ]
+      "noise": ["420:4", 0],
+      "guider": ["420:2", 0],
+      "sampler": ["420:8", 0],
+      "sigmas": ["420:9", 0],
+      "latent_image": ["481", 2]
     },
     "class_type": "SamplerCustomAdvanced"
   }

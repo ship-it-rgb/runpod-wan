@@ -49,12 +49,9 @@ COPY start.sh /start.sh
 COPY rp_handler.py /rp_handler.py
 COPY workflows/ /ComfyUI/workflows/
 
-# 1. 모델을 저장할 디렉토리 생성
-RUN mkdir -p /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/models/vfi/rife
-
-# 2. RIFE 4.7 모델 다운로드 (가장 안정적인 허깅페이스 미러 사용)
-RUN wget -O /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/models/vfi/rife/rife47.pth \
-    https://huggingface.co/jasonot/mycomfyui/resolve/main/rife47.pth
+RUN mkdir -p /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife
+RUN wget -O /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth \
+    https://github.com/styler00dollar/VSGAN-tensorrt-docker/releases/download/models/rife47.pth
 
 # Set permissions
 RUN chmod +x /start.sh
