@@ -1,35 +1,23 @@
-# ⚠️ WARNING: DO NOT CHANGE BASE IMAGE - RTX 5090 REQUIRES CUDA 12.8+
-# See .sisyphus/notepads/runpod-wan-serverless/CRITICAL_REQUIREMENTS.md
-# NVIDIA CUDA 12.8.0 Base Image (devel for compilation support)
-FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
+# PyTorch 2.7.0 + CUDA 12.8 + cuDNN9 (devel for SageAttention compilation)
+# RTX 5090 (Blackwell sm_120) officially supported
+FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
 
-# Environment Variables - RTX 5090 is sm_120 (Blackwell architecture)
-# SageAttention checks for 12.0/12.1 in TORCH_CUDA_ARCH_LIST to enable sm120a build
+# Environment Variables for SageAttention compilation
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0;12.0"
 ENV CUDA_HOME=/usr/local/cuda
 ENV MAX_JOBS=4
-ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FORCE_CUDA=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git python3-pip python3-dev ffmpeg ninja-build aria2 \
+    git ffmpeg ninja-build aria2 \
     libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 curl \
     build-essential wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip first
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Install PyTorch 2.7.0 stable with CUDA 12.8 (official RTX 5090/Blackwell sm_120 support)
-# Split into separate layers to reduce memory pressure during pip install
-# Using --no-cache-dir to minimize disk/memory usage
-RUN pip install --no-cache-dir torch==2.7.0 --index-url https://download.pytorch.org/whl/cu128
-RUN pip install --no-cache-dir torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-
-# Verify PyTorch CUDA version
-RUN python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
+# Verify PyTorch CUDA version (pre-installed in base image)
+RUN python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
 
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
