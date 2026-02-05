@@ -17,6 +17,9 @@
             --border-color: #2a2a4a;
             --input-bg: #0f172a;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --processing-color: #3498db;
         }
 
         * {
@@ -90,6 +93,8 @@
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
         input[type="password"],
@@ -177,6 +182,57 @@
             display: block;
         }
 
+        /* Resolution Selector */
+        .resolution-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .radio-card {
+            position: relative;
+        }
+
+        .radio-card input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .radio-card input:checked + .radio-content {
+            border-color: var(--accent-color);
+            background-color: rgba(233, 69, 96, 0.1);
+            box-shadow: 0 0 0 1px var(--accent-color);
+        }
+
+        .radio-content .res-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .radio-content .res-dim {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
         /* Button */
         .btn {
             background-color: var(--accent-color);
@@ -213,66 +269,6 @@
             filter: grayscale(0.5);
         }
 
-        /* Status & Output */
-        .status-container {
-            display: none;
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(233, 69, 96, 0.1);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        #status-text {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .output-container {
-            display: none;
-            margin-top: 1.5rem;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        video {
-            width: 100%;
-            border-radius: 1rem;
-            border: 1px solid var(--border-color);
-            background-color: black;
-            margin-bottom: 1rem;
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .hidden { display: none !important; }
-
         .error-message {
             background-color: rgba(231, 76, 60, 0.1);
             border: 1px solid #e74c3c;
@@ -283,6 +279,119 @@
             margin-top: 1rem;
             display: none;
         }
+
+        .hidden { display: none !important; }
+
+        /* Queue System */
+        .queue-container {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .queue-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .queue-item:hover {
+            border-color: var(--accent-color);
+        }
+
+        .queue-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: black;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .queue-content {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            gap: 1rem;
+        }
+
+        .queue-prompt {
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
+        }
+
+        .queue-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .status-badge.queued { background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); }
+        .status-badge.processing { background: rgba(52, 152, 219, 0.1); color: var(--processing-color); border: 1px solid rgba(52, 152, 219, 0.2); }
+        .status-badge.completed { background: rgba(46, 204, 113, 0.1); color: var(--success-color); border: 1px solid rgba(46, 204, 113, 0.2); }
+        .status-badge.failed { background: rgba(231, 76, 60, 0.1); color: var(--error-color); border: 1px solid rgba(231, 76, 60, 0.2); }
+
+        .video-wrapper {
+            margin-top: 1rem;
+            width: 100%;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: #000;
+            display: none;
+        }
+        
+        .video-wrapper.show {
+            display: block;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        /* Spinner for badge */
+        .badge-spinner {
+            width: 10px;
+            height: 10px;
+            border: 2px solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -299,7 +408,7 @@
             <div class="settings-grid">
                 <label for="api-key">RunPod API Key</label>
                 <input type="password" id="api-key" placeholder="Enter your rpa-..." autocomplete="current-password">
-                <p style="font-size: 0.75rem; color: var(--text-muted);">Stored securely in your browser's localStorage.</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Stored securely in your browser's localStorage.</p>
             </div>
         </div>
 
@@ -324,6 +433,38 @@
                 <textarea id="prompt" placeholder="Describe the motion or scene..."></textarea>
             </div>
 
+            <!-- Resolution Selector -->
+            <div class="resolution-grid">
+                <label class="radio-card">
+                    <input type="radio" name="resolution" value="720x1280" checked>
+                    <div class="radio-content">
+                        <span class="res-name">720p 세로</span>
+                        <span class="res-dim">720x1280</span>
+                    </div>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="resolution" value="1280x720">
+                    <div class="radio-content">
+                        <span class="res-name">720p 가로</span>
+                        <span class="res-dim">1280x720</span>
+                    </div>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="resolution" value="544x960">
+                    <div class="radio-content">
+                        <span class="res-name">544p 세로</span>
+                        <span class="res-dim">544x960</span>
+                    </div>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="resolution" value="960x544">
+                    <div class="radio-content">
+                        <span class="res-name">544p 가로</span>
+                        <span class="res-dim">960x544</span>
+                    </div>
+                </label>
+            </div>
+
             <div class="collapsible">
                 <button class="collapsible-trigger" id="neg-trigger">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -342,24 +483,8 @@
             </button>
         </div>
 
-        <!-- Status -->
-        <div class="card status-container" id="status-card">
-            <div class="loader"></div>
-            <div id="status-text">Starting generation...</div>
-        </div>
-
-        <!-- Result -->
-        <div class="card output-container" id="output-card">
-            <div class="section-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.6 11.6L22 7v10l-6.4-4.5v4.5H2V7h13.6v4.6z"/></svg>
-                Generated Video
-            </div>
-            <video id="video-player" controls></video>
-            <button class="btn btn-secondary" id="download-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download Video
-            </button>
-        </div>
+        <!-- Queue List -->
+        <div id="queue-container" class="queue-container"></div>
     </div>
 
     <script>
@@ -375,18 +500,13 @@
         const promptInput = document.getElementById('prompt');
         const negativePromptInput = document.getElementById('negative-prompt');
         const generateBtn = document.getElementById('generate-btn');
-        const statusCard = document.getElementById('status-card');
-        const statusText = document.getElementById('status-text');
-        const outputCard = document.getElementById('output-card');
-        const videoPlayer = document.getElementById('video-player');
-        const downloadBtn = document.getElementById('download-btn');
         const errorBox = document.getElementById('error-box');
         const negTrigger = document.getElementById('neg-trigger');
         const negContent = document.getElementById('neg-content');
+        const queueContainer = document.getElementById('queue-container');
 
         let base64Image = null;
-        let pollingInterval = null;
-
+        
         // Load saved API Key
         apiKeyInput.value = localStorage.getItem('runpod_api_key') || '';
         apiKeyInput.addEventListener('input', (e) => {
@@ -402,23 +522,14 @@
 
         // File Upload Logic
         dropZone.addEventListener('click', () => fileInput.click());
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
-
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-over');
             const file = e.dataTransfer.files[0];
             if (file) handleFile(file);
         });
-
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) handleFile(file);
@@ -429,7 +540,6 @@
                 showError('Please upload an image file.');
                 return;
             }
-
             const reader = new FileReader();
             reader.onload = (e) => {
                 base64Image = e.target.result;
@@ -444,46 +554,115 @@
         function showError(msg) {
             errorBox.textContent = msg;
             errorBox.style.display = 'block';
-            statusCard.style.display = 'none';
-            generateBtn.disabled = false;
         }
 
-        // API Logic
-        generateBtn.addEventListener('click', async () => {
-            const apiKey = apiKeyInput.value.trim();
-            const prompt = promptInput.value.trim();
-            const negativePrompt = negativePromptInput.value.trim();
+        // --- Queue System ---
 
-            if (!apiKey) return showError('API Key is required.');
-            if (!base64Image) return showError('Please upload an image.');
-            if (!prompt) return showError('Prompt is required.');
+        function getSelectedResolution() {
+            const radio = document.querySelector('input[name="resolution"]:checked');
+            if (!radio) return { w: 720, h: 1280, label: '720p 세로' }; // fallback
+            const [w, h] = radio.value.split('x').map(Number);
+            const label = radio.parentElement.querySelector('.res-name').textContent;
+            return { w, h, label };
+        }
 
-            errorBox.style.display = 'none';
-            generateBtn.disabled = true;
-            statusCard.style.display = 'block';
-            outputCard.style.display = 'none';
-            statusText.textContent = 'Submitting job...';
+        function createQueueItemElement(item) {
+            const div = document.createElement('div');
+            div.className = 'queue-item';
+            div.id = `queue-${item.id}`;
+            div.innerHTML = `
+                <img src="${item.thumb}" class="queue-thumb" alt="Thumbnail">
+                <div class="queue-content">
+                    <div>
+                        <div class="queue-header">
+                            <span class="queue-prompt">${item.prompt}</span>
+                            <span class="status-badge queued" id="status-badge-${item.id}">Queued</span>
+                        </div>
+                        <div class="queue-meta">
+                            <span>${item.resLabel} (${item.w}x${item.h})</span>
+                            <span id="status-text-${item.id}">Waiting...</span>
+                        </div>
+                    </div>
+                    <div class="video-wrapper" id="video-wrapper-${item.id}">
+                        <video id="video-${item.id}" controls playsinline></video>
+                    </div>
+                    <div class="error-message" id="error-${item.id}" style="margin-top: 0.5rem; padding: 0.5rem;"></div>
+                </div>
+            `;
+            return div;
+        }
+
+        function updateItemStatus(id, status, message) {
+            const badge = document.getElementById(`status-badge-${id}`);
+            const text = document.getElementById(`status-text-${id}`);
+            if (!badge || !text) return;
+
+            badge.className = `status-badge ${status.toLowerCase()}`;
+            badge.innerHTML = status;
+            
+            if (status === 'PROCESSING') {
+                badge.innerHTML = `<div class="badge-spinner"></div> Processing`;
+            }
+
+            text.textContent = message;
+        }
+
+        function handleItemError(id, msg) {
+            updateItemStatus(id, 'FAILED', 'Failed');
+            const errDiv = document.getElementById(`error-${id}`);
+            if (errDiv) {
+                errDiv.textContent = msg;
+                errDiv.style.display = 'block';
+            }
+        }
+
+        function handleItemSuccess(id, videoBase64) {
+            updateItemStatus(id, 'COMPLETED', 'Done');
+            const wrapper = document.getElementById(`video-wrapper-${id}`);
+            const video = document.getElementById(`video-${id}`);
+            
+            if (wrapper && video) {
+                const videoSrc = videoBase64.startsWith('data:') ? videoBase64 : `data:video/mp4;base64,${videoBase64}`;
+                video.src = videoSrc;
+                wrapper.classList.add('show');
+                // Auto download
+                downloadVideo(videoSrc, `wan-video-${id}.mp4`);
+            }
+        }
+
+        function downloadVideo(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Job Processing
+        async function processQueueItem(item) {
+            updateItemStatus(item.id, 'PROCESSING', 'Submitting to RunPod...');
 
             try {
-                // Remove prefix from base64 if it exists (RunPod usually wants the raw base64 or with prefix? 
-                // Context says "base64 encoded image". I'll keep the prefix as it's common for data-uris, 
-                // but if the backend expects just raw, I'll strip it. The prompt example says "base64...".
-                // Usually they want the raw base64 without "data:image/png;base64,").
-                const rawBase64 = base64Image.split(',')[1];
+                const rawBase64 = item.base64.split(',')[1];
+                
+                const payload = {
+                    input: {
+                        start_image: rawBase64,
+                        prompt: item.prompt,
+                        negative_prompt: item.negPrompt,
+                        width: item.w,
+                        height: item.h
+                    }
+                };
 
                 const response = await fetch(`${apiBase}/run`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${apiKey}`,
+                        'Authorization': `Bearer ${item.apiKey}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        input: {
-                            start_image: rawBase64,
-                            prompt: prompt,
-                            negative_prompt: negativePrompt
-                        }
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 if (!response.ok) {
@@ -494,23 +673,19 @@
                 const data = await response.json();
                 const jobId = data.id;
                 
-                statusText.textContent = 'Job queued... (ID: ' + jobId + ')';
-                startPolling(jobId, apiKey);
+                updateItemStatus(item.id, 'PROCESSING', `Job ID: ${jobId}`);
+                pollJob(item, jobId);
 
             } catch (err) {
-                showError('Error: ' + err.message);
+                handleItemError(item.id, err.message);
             }
-        });
+        }
 
-        function startPolling(jobId, apiKey) {
-            if (pollingInterval) clearInterval(pollingInterval);
-
-            pollingInterval = setInterval(async () => {
+        function pollJob(item, jobId) {
+            const interval = setInterval(async () => {
                 try {
                     const response = await fetch(`${apiBase}/status/${jobId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${apiKey}`
-                        }
+                        headers: { 'Authorization': `Bearer ${item.apiKey}` }
                     });
 
                     if (!response.ok) throw new Error('Polling failed');
@@ -518,47 +693,62 @@
                     const data = await response.json();
                     
                     if (data.status === 'COMPLETED') {
-                        clearInterval(pollingInterval);
-                        handleSuccess(data.output);
+                        clearInterval(interval);
+                        if (data.output && data.output.video) {
+                            handleItemSuccess(item.id, data.output.video);
+                        } else {
+                            handleItemError(item.id, 'Output received but no video data found.');
+                        }
                     } else if (data.status === 'FAILED') {
-                        clearInterval(pollingInterval);
-                        showError('Job failed: ' + (data.error || 'Unknown error'));
+                        clearInterval(interval);
+                        handleItemError(item.id, data.error || 'Unknown error');
                     } else {
-                        statusText.textContent = `Status: ${data.status}...`;
+                        // Still running
+                        updateItemStatus(item.id, 'PROCESSING', `Status: ${data.status}...`);
                     }
 
                 } catch (err) {
-                    clearInterval(pollingInterval);
-                    showError('Polling error: ' + err.message);
+                    clearInterval(interval);
+                    handleItemError(item.id, 'Polling error: ' + err.message);
                 }
-            }, 5000);
+            }, 5000); // Poll every 5 seconds
         }
 
-        function handleSuccess(output) {
-            statusCard.style.display = 'none';
-            generateBtn.disabled = false;
-            
-            if (output && output.video) {
-                // Video is base64
-                const videoBase64 = output.video;
-                // Some base64 might have prefix or not. Assuming raw base64 from backend.
-                const videoSrc = videoBase64.startsWith('data:') ? videoBase64 : `data:video/mp4;base64,${videoBase64}`;
-                
-                videoPlayer.src = videoSrc;
-                outputCard.style.display = 'block';
+        // Main Generate Handler
+        generateBtn.addEventListener('click', () => {
+            const apiKey = apiKeyInput.value.trim();
+            const prompt = promptInput.value.trim();
+            const negativePrompt = negativePromptInput.value.trim();
 
-                downloadBtn.onclick = () => {
-                    const link = document.createElement('a');
-                    link.href = videoSrc;
-                    link.download = `wan-video-${Date.now()}.mp4`;
-                    link.click();
-                };
+            if (!apiKey) return showError('API Key is required.');
+            if (!base64Image) return showError('Please upload an image.');
+            if (!prompt) return showError('Prompt is required.');
 
-                videoPlayer.play();
-            } else {
-                showError('Output received but no video data found.');
-            }
-        }
+            errorBox.style.display = 'none';
+
+            const res = getSelectedResolution();
+            const itemId = Date.now();
+
+            const queueItem = {
+                id: itemId,
+                apiKey: apiKey,
+                base64: base64Image,
+                thumb: base64Image, // Use same for thumb
+                prompt: prompt,
+                negPrompt: negativePrompt,
+                w: res.w,
+                h: res.h,
+                resLabel: res.label
+            };
+
+            // Add to UI
+            const el = createQueueItemElement(queueItem);
+            queueContainer.prepend(el);
+
+            // Start Process
+            processQueueItem(queueItem);
+        });
+
     </script>
 </body>
 </html>
