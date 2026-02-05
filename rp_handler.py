@@ -205,6 +205,14 @@ def handler(job):
         else:
             return {"error": "Node 247 (Negative Prompt) not found in workflow"}
 
+        # Node 500:1: EmptyImage (Resolution)
+        width = job_input.get("width", 720)
+        height = job_input.get("height", 1280)
+        if "500:1" in workflow:
+            workflow["500:1"]["inputs"]["width"] = width
+            workflow["500:1"]["inputs"]["height"] = height
+            print(f"Resolution set to {width}x{height}")
+
         # Queue workflow
         client_id = str(uuid4())
         prompt_id = queue_workflow(workflow, client_id)

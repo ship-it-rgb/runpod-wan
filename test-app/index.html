@@ -301,6 +301,14 @@
             position: relative;
         }
 
+        .queue-item.completed {
+            grid-template-columns: 1fr;
+        }
+
+        .queue-item.completed .queue-thumb {
+            display: none;
+        }
+
         .queue-item:hover {
             border-color: var(--accent-color);
         }
@@ -618,8 +626,13 @@
 
         function handleItemSuccess(id, videoBase64) {
             updateItemStatus(id, 'COMPLETED', 'Done');
+            const queueItem = document.getElementById(`queue-${id}`);
             const wrapper = document.getElementById(`video-wrapper-${id}`);
             const video = document.getElementById(`video-${id}`);
+            
+            if (queueItem) {
+                queueItem.classList.add('completed');
+            }
             
             if (wrapper && video) {
                 const videoSrc = videoBase64.startsWith('data:') ? videoBase64 : `data:video/mp4;base64,${videoBase64}`;
