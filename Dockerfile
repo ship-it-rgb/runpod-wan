@@ -50,8 +50,6 @@ COPY rp_handler.py /rp_handler.py
 COPY workflows/ /ComfyUI/workflows/
 
 RUN mkdir -p /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife
-RUN wget -O /ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth \
-    https://github.com/styler00dollar/VSGAN-tensorrt-docker/releases/download/models/rife47.pth
 
 # Set permissions
 RUN chmod +x /start.sh
