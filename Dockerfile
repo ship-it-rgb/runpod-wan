@@ -43,9 +43,8 @@ RUN for dir in */; do \
         fi \
     done
 
-# Install SageAttention 2.2.0 with Blackwell (RTX 5090) support
-RUN pip install --no-cache-dir "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation -v
-RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python
+# SageAttention is installed at runtime (start.sh) due to OOM during GitHub Actions build
+RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton
 
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
