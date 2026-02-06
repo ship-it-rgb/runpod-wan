@@ -89,22 +89,52 @@ jobs:
 
       - name: Trigger RunPod endpoint update
         run: |
-          echo "Updating RunPod endpoint: ${{ steps.endpoint.outputs.id }} (${{ steps.endpoint.outputs.branch }})"
+          ENDPOINT_ID="${{ steps.endpoint.outputs.id }}"
+          BRANCH="${{ steps.endpoint.outputs.branch }}"
+          API_KEY="${{ secrets.RUNPOD_API_KEY }}"
           
-          # Update endpoint to force new image pull
-          # Using GraphQL mutation to modify endpoint (touch operation)
-          RESPONSE=$(curl -s -X POST "https://api.runpod.io/graphql" \
+          echo "Updating RunPod endpoint: $ENDPOINT_ID ($BRANCH)"
+          
+          # Step 1: Get current endpoint's templateId
+          echo "Fetching current endpoint configuration..."
+          ENDPOINT_QUERY=$(curl -s -X POST "https://api.runpod.io/graphql" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RUNPOD_API_KEY }}" \
-            -d '{
-              "query": "mutation { updateEndpointTemplate(input: { id: \"${{ steps.endpoint.outputs.id }}\", templateId: null }) { id } }"
-            }')
+            -H "Authorization: Bearer $API_KEY" \
+            -d "{\"query\": \"query { myself { endpoints { id templateId } } }\"}")
           
-          echo "Response: $RESPONSE"
+          echo "Endpoint query response: $ENDPOINT_QUERY"
           
-          # Fallback: Purge queue to cycle workers
-          curl -s -X POST "https://api.runpod.ai/v2/${{ steps.endpoint.outputs.id }}/purge-queue" \
-            -H "Authorization: Bearer ${{ secrets.RUNPOD_API_KEY }}" || true
+          # Extract templateId for our endpoint
+          TEMPLATE_ID=$(echo "$ENDPOINT_QUERY" | jq -r ".data.myself.endpoints[] | select(.id == \"$ENDPOINT_ID\") | .templateId")
           
-          echo "✓ Deploy trigger sent for ${{ steps.endpoint.outputs.branch }} branch"
+          if [ -z "$TEMPLATE_ID" ] || [ "$TEMPLATE_ID" == "null" ]; then
+            echo "Warning: Could not find templateId for endpoint $ENDPOINT_ID"
+            echo "Skipping GraphQL update, using purge-queue only"
+          else
+            echo "Found templateId: $TEMPLATE_ID"
+            
+            # Step 2: Update endpoint with same templateId to trigger rolling update
+            echo "Triggering rolling update..."
+            UPDATE_RESPONSE=$(curl -s -X POST "https://api.runpod.io/graphql" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $API_KEY" \
+              -d "{\"query\": \"mutation { updateEndpointTemplate(input: { endpointId: \\\"$ENDPOINT_ID\\\", templateId: \\\"$TEMPLATE_ID\\\" }) { id templateId } }\"}")
+            
+            echo "Update response: $UPDATE_RESPONSE"
+            
+            # Check for errors
+            if echo "$UPDATE_RESPONSE" | jq -e '.errors' > /dev/null 2>&1; then
+              echo "Warning: GraphQL update had errors"
+            else
+              echo "✓ Rolling update triggered successfully"
+            fi
+          fi
+          
+          # Step 3: Purge queue to ensure workers restart
+          echo "Purging queue..."
+          PURGE_RESPONSE=$(curl -s -X POST "https://api.runpod.ai/v2/$ENDPOINT_ID/purge-queue" \
+            -H "Authorization: Bearer $API_KEY" || echo '{"error": "purge failed"}')
+          echo "Purge response: $PURGE_RESPONSE"
+          
+          echo "✓ Deploy trigger completed for $BRANCH branch"
 
