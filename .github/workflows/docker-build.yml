@@ -13,8 +13,17 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      sha_tag: ${{ steps.sha.outputs.tag }}
     
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: sha
+        run: echo "tag=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
@@ -25,9 +34,6 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-
-      - name: Checkout
-        uses: actions/checkout@v4
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -79,15 +85,16 @@ jobs:
       - name: Set endpoint ID based on branch
         id: endpoint
         run: |
+          SHA_TAG="${{ needs.build.outputs.sha_tag }}"
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_MAIN }}" >> $GITHUB_OUTPUT
             echo "branch=main" >> $GITHUB_OUTPUT
-            echo "image=ghcr.io/ship-it-rgb/runpod-wan:latest" >> $GITHUB_OUTPUT
           else
             echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_TEST }}" >> $GITHUB_OUTPUT
             echo "branch=test" >> $GITHUB_OUTPUT
-            echo "image=ghcr.io/ship-it-rgb/runpod-wan:test-sageattention" >> $GITHUB_OUTPUT
           fi
+          # Use SHA tag for unique image name on every deploy
+          echo "image=ghcr.io/ship-it-rgb/runpod-wan:$SHA_TAG" >> $GITHUB_OUTPUT
 
       - name: Trigger RunPod endpoint update
         run: |
