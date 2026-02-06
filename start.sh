@@ -97,17 +97,19 @@ download_from_hf "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Light
     "/runpod-volume/models/loras/WAN2.2_lightx2v_I2V_14B_480p_rank128_bf16.safetensors" \
     "lightx2v_LoRA" &
 
-download_from_hf "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors" \
-    "/runpod-volume/models/clip_vision/clip_vision_h.safetensors" \
-    "clip_vision_h" &
-
+RIFE_VOLUME="/runpod-volume/models/rife/rife47.pth"
 RIFE_DEST="/ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth"
-if [ ! -f "$RIFE_DEST" ]; then
-    echo "Downloading RIFE 4.7 model..."
-    wget -q -O "$RIFE_DEST" "https://github.com/styler00dollar/VSGAN-tensorrt-docker/releases/download/models/rife47.pth"
-    echo "✓ RIFE 4.7 downloaded"
+mkdir -p "$(dirname "$RIFE_VOLUME")"
+mkdir -p "$(dirname "$RIFE_DEST")"
+
+if [ -f "$RIFE_VOLUME" ]; then
+    echo "✓ RIFE 4.7 found in network volume, linking..."
+    ln -sf "$RIFE_VOLUME" "$RIFE_DEST"
 else
-    echo "✓ RIFE 4.7 already exists"
+    echo "Downloading RIFE 4.7 model..."
+    wget -q -O "$RIFE_VOLUME" "https://github.com/styler00dollar/VSGAN-tensorrt-docker/releases/download/models/rife47.pth"
+    ln -sf "$RIFE_VOLUME" "$RIFE_DEST"
+    echo "✓ RIFE 4.7 downloaded to volume and linked"
 fi &
 
 wait
