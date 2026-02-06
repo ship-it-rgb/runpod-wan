@@ -119,7 +119,7 @@ jobs:
             # Step 2: Update template directly via REST API to trigger rolling update
             # This works for bound templates (unlike updateEndpointTemplate GraphQL mutation)
             echo "Triggering rolling update via REST API..."
-            UPDATE_RESPONSE=$(curl -s -X PATCH "https://api.runpod.io/v1/templates/$TEMPLATE_ID" \
+            UPDATE_RESPONSE=$(curl -s -X PATCH "https://rest.runpod.io/v1/templates/$TEMPLATE_ID" \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer $API_KEY" \
               -d "{\"imageName\": \"$IMAGE\"}" || echo '{"error": "update failed"}')
@@ -133,7 +133,7 @@ jobs:
               echo "Warning: REST API update may have failed, trying fallback..."
               
               # Fallback: Try updating endpoint directly
-              ENDPOINT_UPDATE=$(curl -s -X PATCH "https://api.runpod.io/v1/endpoints/$ENDPOINT_ID" \
+              ENDPOINT_UPDATE=$(curl -s -X PATCH "https://rest.runpod.io/v1/endpoints/$ENDPOINT_ID" \
                 -H "Content-Type: application/json" \
                 -H "Authorization: Bearer $API_KEY" \
                 -d "{\"template\": {\"imageName\": \"$IMAGE\"}}" || echo '{"error": "endpoint update failed"}')
