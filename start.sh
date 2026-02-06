@@ -116,7 +116,26 @@ echo "--- All models ready ---"
 echo "--- Starting ComfyUI server ---"
 python3 -u /ComfyUI/main.py --listen 0.0.0.0 --port 8188 --fast fp16_accumulation &
 
-sleep 10
+echo "--- Waiting for ComfyUI to be ready ---"
+COMFY_URL="http://127.0.0.1:8188/system_stats"
+MAX_WAIT=300
+WAITED=0
+while [ $WAITED -lt $MAX_WAIT ]; do
+    if curl -s --max-time 5 "$COMFY_URL" > /dev/null 2>&1; then
+        echo "✓ ComfyUI is ready (waited ${WAITED}s)"
+        break
+    fi
+    sleep 2
+    WAITED=$((WAITED + 2))
+    if [ $((WAITED % 10)) -eq 0 ]; then
+        echo "Still waiting for ComfyUI... (${WAITED}s)"
+    fi
+done
+
+if [ $WAITED -ge $MAX_WAIT ]; then
+    echo "ERROR: ComfyUI failed to start within ${MAX_WAIT}s"
+    exit 1
+fi
 
 echo "--- Starting RunPod handler ---"
 python -u /rp_handler.py
