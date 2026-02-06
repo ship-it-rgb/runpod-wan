@@ -72,3 +72,39 @@ jobs:
           build-args: |
             BUILDKIT_INLINE_CACHE=1
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set endpoint ID based on branch
+        id: endpoint
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_MAIN }}" >> $GITHUB_OUTPUT
+            echo "branch=main" >> $GITHUB_OUTPUT
+          else
+            echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_TEST }}" >> $GITHUB_OUTPUT
+            echo "branch=test" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger RunPod endpoint update
+        run: |
+          echo "Updating RunPod endpoint: ${{ steps.endpoint.outputs.id }} (${{ steps.endpoint.outputs.branch }})"
+          
+          # Update endpoint to force new image pull
+          # Using GraphQL mutation to modify endpoint (touch operation)
+          RESPONSE=$(curl -s -X POST "https://api.runpod.io/graphql" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RUNPOD_API_KEY }}" \
+            -d '{
+              "query": "mutation { updateEndpointTemplate(input: { id: \"${{ steps.endpoint.outputs.id }}\", templateId: null }) { id } }"
+            }')
+          
+          echo "Response: $RESPONSE"
+          
+          # Fallback: Purge queue to cycle workers
+          curl -s -X POST "https://api.runpod.ai/v2/${{ steps.endpoint.outputs.id }}/purge-queue" \
+            -H "Authorization: Bearer ${{ secrets.RUNPOD_API_KEY }}" || true
+          
+          echo "✓ Deploy trigger sent for ${{ steps.endpoint.outputs.branch }} branch"
+
