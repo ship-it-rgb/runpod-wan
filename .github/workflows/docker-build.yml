@@ -82,18 +82,22 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_MAIN }}" >> $GITHUB_OUTPUT
             echo "branch=main" >> $GITHUB_OUTPUT
+            echo "image=ghcr.io/ship-it-rgb/runpod-wan:latest" >> $GITHUB_OUTPUT
           else
             echo "id=${{ secrets.RUNPOD_ENDPOINT_ID_TEST }}" >> $GITHUB_OUTPUT
             echo "branch=test" >> $GITHUB_OUTPUT
+            echo "image=ghcr.io/ship-it-rgb/runpod-wan:test-sageattention" >> $GITHUB_OUTPUT
           fi
 
       - name: Trigger RunPod endpoint update
         run: |
           ENDPOINT_ID="${{ steps.endpoint.outputs.id }}"
           BRANCH="${{ steps.endpoint.outputs.branch }}"
+          IMAGE="${{ steps.endpoint.outputs.image }}"
           API_KEY="${{ secrets.RUNPOD_API_KEY }}"
           
           echo "Updating RunPod endpoint: $ENDPOINT_ID ($BRANCH)"
+          echo "Image: $IMAGE"
           
           # Step 1: Get current endpoint's templateId
           echo "Fetching current endpoint configuration..."
@@ -109,28 +113,36 @@ jobs:
           
           if [ -z "$TEMPLATE_ID" ] || [ "$TEMPLATE_ID" == "null" ]; then
             echo "Warning: Could not find templateId for endpoint $ENDPOINT_ID"
-            echo "Skipping GraphQL update, using purge-queue only"
           else
             echo "Found templateId: $TEMPLATE_ID"
             
-            # Step 2: Update endpoint with same templateId to trigger rolling update
-            echo "Triggering rolling update..."
-            UPDATE_RESPONSE=$(curl -s -X POST "https://api.runpod.io/graphql" \
+            # Step 2: Update template directly via REST API to trigger rolling update
+            # This works for bound templates (unlike updateEndpointTemplate GraphQL mutation)
+            echo "Triggering rolling update via REST API..."
+            UPDATE_RESPONSE=$(curl -s -X PATCH "https://api.runpod.io/v1/templates/$TEMPLATE_ID" \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer $API_KEY" \
-              -d "{\"query\": \"mutation { updateEndpointTemplate(input: { endpointId: \\\"$ENDPOINT_ID\\\", templateId: \\\"$TEMPLATE_ID\\\" }) { id templateId } }\"}")
+              -d "{\"imageName\": \"$IMAGE\"}" || echo '{"error": "update failed"}')
             
             echo "Update response: $UPDATE_RESPONSE"
             
-            # Check for errors
-            if echo "$UPDATE_RESPONSE" | jq -e '.errors' > /dev/null 2>&1; then
-              echo "Warning: GraphQL update had errors"
-            else
+            # Check for success
+            if echo "$UPDATE_RESPONSE" | jq -e '.id' > /dev/null 2>&1; then
               echo "✓ Rolling update triggered successfully"
+            else
+              echo "Warning: REST API update may have failed, trying fallback..."
+              
+              # Fallback: Try updating endpoint directly
+              ENDPOINT_UPDATE=$(curl -s -X PATCH "https://api.runpod.io/v1/endpoints/$ENDPOINT_ID" \
+                -H "Content-Type: application/json" \
+                -H "Authorization: Bearer $API_KEY" \
+                -d "{\"template\": {\"imageName\": \"$IMAGE\"}}" || echo '{"error": "endpoint update failed"}')
+              
+              echo "Endpoint update response: $ENDPOINT_UPDATE"
             fi
           fi
           
-          # Step 3: Purge queue to ensure workers restart
+          # Step 3: Purge queue to ensure workers restart with new image
           echo "Purging queue..."
           PURGE_RESPONSE=$(curl -s -X POST "https://api.runpod.ai/v2/$ENDPOINT_ID/purge-queue" \
             -H "Authorization: Bearer $API_KEY" || echo '{"error": "purge failed"}')
