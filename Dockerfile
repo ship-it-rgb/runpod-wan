@@ -6,6 +6,8 @@ ENV CUDA_HOME=/usr/local/cuda
 ENV DEBIAN_FRONTEND=noninteractive
 # Force Blackwell architecture build
 ENV TORCH_CUDA_ARCH_LIST="12.0"
+# Limit parallel build jobs to prevent OOM on GitHub Actions runners
+ENV MAX_JOBS=2
 
 # Install system dependencies & Python 3.13 via PPA
 RUN apt-get update && apt-get install -y software-properties-common && \
@@ -63,7 +65,7 @@ RUN python3.13 -m pip install --no-cache-dir runpod websocket-client deepdiff js
 
 # Install SageAttention from source (Main branch)
 # This includes Blackwell (sm_120) support
-RUN python3.13 -m pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
+RUN python3.13 -m pip install -v "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
 
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
