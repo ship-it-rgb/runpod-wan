@@ -1,19 +1,27 @@
-# PyTorch 2.7.0 + CUDA 12.8 + cuDNN9 (devel for CUDA compilation)
-# RTX 5090 (Blackwell sm_120) officially supported
-FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-devel
+# NVIDIA CUDA 12.8 Devel Base (Supports Blackwell sm_120)
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04
 
 # Environment Variables
 ENV CUDA_HOME=/usr/local/cuda
 ENV DEBIAN_FRONTEND=noninteractive
+# Force Blackwell architecture build
+ENV TORCH_CUDA_ARCH_LIST="12.0"
 
-# Install system dependencies
+# Install system dependencies & Python 3.11
 RUN apt-get update && apt-get install -y \
-    git ffmpeg ninja-build aria2 \
+    git python3.11 python3.11-dev python3-pip \
+    ffmpeg ninja-build aria2 \
     libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 curl \
     build-essential wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Verify PyTorch CUDA version (pre-installed in base image)
+# Link python3 to python
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
+
+# Install PyTorch Nightly with CUDA 12.8 support (Required for Blackwell / Torch > 2.9)
+RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+
+# Verify PyTorch CUDA version
 RUN python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
 
 # Clone ComfyUI
@@ -41,11 +49,11 @@ RUN for dir in */; do \
     done
 
 # Install additional Python packages
-RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton
+RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton comfy-kitchen
 
-# Install SageAttention (using --no-build-isolation to use container's torch/cuda headers)
-# This allows automatic architecture detection for Blackwell (sm_120)
-RUN pip install sageattention --no-build-isolation
+# Install SageAttention from source (Main branch)
+# This includes Blackwell (sm_120) support
+RUN pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
 
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
