@@ -1,5 +1,5 @@
-# NVIDIA CUDA 12.8 Devel Base (Supports Blackwell sm_120)
-FROM nvidia/cuda:12.8.0-devel-ubuntu22.04
+# NVIDIA CUDA 12.9 Devel Base (As requested: cu129)
+FROM nvidia/cuda:12.9.1-devel-ubuntu22.04
 
 # Environment Variables
 ENV CUDA_HOME=/usr/local/cuda
@@ -7,19 +7,26 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Force Blackwell architecture build
 ENV TORCH_CUDA_ARCH_LIST="12.0"
 
-# Install system dependencies & Python 3.11
-RUN apt-get update && apt-get install -y \
-    git python3.11 python3.11-dev python3-pip \
+# Install system dependencies & Python 3.13 via PPA
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && apt-get install -y \
+    git python3.13 python3.13-dev python3.13-venv \
     ffmpeg ninja-build aria2 \
     libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 curl \
     build-essential wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Link python3 to python
-RUN ln -s /usr/bin/python3.11 /usr/bin/python
+# Install pip for Python 3.13
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13
 
-# Install PyTorch Nightly with CUDA 12.8 support (Required for Blackwell / Torch > 2.9)
-RUN pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+# Link python3/python to python3.13
+RUN ln -sf /usr/bin/python3.13 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.13 /usr/bin/python
+
+# Install PyTorch 2.8.0 with CUDA 12.9 support (cu129)
+# As requested: Python 3.13.6, PyTorch 2.8.0, cu129
+RUN pip install torch==2.8.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
 
 # Verify PyTorch CUDA version
 RUN python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
