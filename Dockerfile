@@ -24,17 +24,20 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13
 RUN ln -sf /usr/bin/python3.13 /usr/bin/python3 && \
     ln -sf /usr/bin/python3.13 /usr/bin/python
 
+# Upgrade pip
+RUN python3.13 -m pip install --upgrade pip
+
 # Install PyTorch 2.8.0 with CUDA 12.9 support (cu129)
 # As requested: Python 3.13.6, PyTorch 2.8.0, cu129
-RUN pip install torch==2.8.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
+RUN python3.13 -m pip install torch==2.8.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
 
 # Verify PyTorch CUDA version
-RUN python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
+RUN python3.13 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
 
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /ComfyUI
 WORKDIR /ComfyUI
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python3.13 -m pip install --no-cache-dir -r requirements.txt
 
 # Install Custom Nodes
 WORKDIR /ComfyUI/custom_nodes
@@ -51,16 +54,16 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git \
 # Install Custom Node Requirements
 RUN for dir in */; do \
         if [ -f "$dir/requirements.txt" ]; then \
-            pip install --no-cache-dir -r "$dir/requirements.txt" || true; \
+            python3.13 -m pip install --no-cache-dir -r "$dir/requirements.txt" || true; \
         fi \
     done
 
 # Install additional Python packages
-RUN pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton comfy-kitchen
+RUN python3.13 -m pip install --no-cache-dir runpod websocket-client deepdiff jsondiff PyWavelets ffmpeg-python triton comfy-kitchen
 
 # Install SageAttention from source (Main branch)
 # This includes Blackwell (sm_120) support
-RUN pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
+RUN python3.13 -m pip install "git+https://github.com/thu-ml/SageAttention.git@main" --no-build-isolation
 
 # Copy files
 COPY extra_model_paths.yaml /ComfyUI/
