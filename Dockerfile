@@ -1,5 +1,5 @@
-# NVIDIA CUDA 12.9 Devel Base (As requested: cu129)
-FROM nvidia/cuda:12.9.1-devel-ubuntu22.04
+# NVIDIA CUDA 12.8 Devel Base (Downgraded from 12.9 to fix Error 804 on RunPod)
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04
 
 # Environment Variables
 ENV CUDA_HOME=/usr/local/cuda
@@ -29,9 +29,10 @@ RUN ln -sf /usr/bin/python3.13 /usr/bin/python3 && \
 # Upgrade pip
 RUN python3.13 -m pip install --upgrade pip
 
-# Install PyTorch 2.8.0 with CUDA 12.9 support (cu129)
-# As requested: Python 3.13.6, PyTorch 2.8.0, cu129
-RUN python3.13 -m pip install torch==2.8.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
+# Install PyTorch 2.8.0 with CUDA 12.8 support (cu128)
+# Downgraded from cu129 to match RunPod host drivers and fix Error 804
+# Verified torch-2.8.0+cu128 exists
+RUN python3.13 -m pip install torch==2.8.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 
 # Verify PyTorch CUDA version
 RUN python3.13 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
