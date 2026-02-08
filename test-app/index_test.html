@@ -188,11 +188,28 @@
         }
 
         /* Resolution Selector */
+        .resolution-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .res-group-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.25rem;
+        }
+
         .resolution-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
-            margin-top: 1.5rem;
         }
 
         .radio-card {
@@ -489,43 +506,106 @@
                 <textarea id="prompt" placeholder="Describe the motion or scene..."></textarea>
             </div>
 
+            <!-- Seed Input -->
+            <div style="margin-top: 1rem;">
+                <label for="seed-input">Seed (Optional)</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" id="seed-input" placeholder="Enter seed or leave empty for random" style="flex: 1;">
+                    <button type="button" id="random-seed-btn" class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 1.2rem; min-width: 3rem; margin: 0; box-shadow: none;" title="Randomize Seed">
+                        🎲
+                    </button>
+                </div>
+            </div>
+
             <!-- Resolution Selector -->
-            <div class="resolution-grid">
-                <label class="radio-card">
-                    <input type="radio" name="resolution" value="720x1280" checked>
-                    <div class="radio-content">
-                        <span class="res-name">720p 세로</span>
-                        <span class="res-dim">720x1280</span>
+            <div class="resolution-container">
+                <div class="res-group">
+                    <h4 class="res-group-title">Small (360p)</h4>
+                    <div class="resolution-grid">
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="360x640">
+                            <div class="radio-content">
+                                <span class="res-name">360p 세로</span>
+                                <span class="res-dim">360x640</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="640x360">
+                            <div class="radio-content">
+                                <span class="res-name">360p 가로</span>
+                                <span class="res-dim">640x360</span>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <label class="radio-card">
-                    <input type="radio" name="resolution" value="1280x720">
-                    <div class="radio-content">
-                        <span class="res-name">720p 가로</span>
-                        <span class="res-dim">1280x720</span>
+                </div>
+
+                <div class="res-group">
+                    <h4 class="res-group-title">Medium (544p / 720p)</h4>
+                    <div class="resolution-grid">
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="544x960">
+                            <div class="radio-content">
+                                <span class="res-name">544p 세로</span>
+                                <span class="res-dim">544x960</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="960x544">
+                            <div class="radio-content">
+                                <span class="res-name">544p 가로</span>
+                                <span class="res-dim">960x544</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="720x1280" checked>
+                            <div class="radio-content">
+                                <span class="res-name">720p 세로</span>
+                                <span class="res-dim">720x1280</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="1280x720">
+                            <div class="radio-content">
+                                <span class="res-name">720p 가로</span>
+                                <span class="res-dim">1280x720</span>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <label class="radio-card">
-                    <input type="radio" name="resolution" value="544x960">
-                    <div class="radio-content">
-                        <span class="res-name">544p 세로</span>
-                        <span class="res-dim">544x960</span>
+                </div>
+
+                <div class="res-group">
+                    <h4 class="res-group-title">Large (960p / 1080p)</h4>
+                    <div class="resolution-grid">
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="960x1706">
+                            <div class="radio-content">
+                                <span class="res-name">960p 세로</span>
+                                <span class="res-dim">960x1706</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="1706x960">
+                            <div class="radio-content">
+                                <span class="res-name">960p 가로</span>
+                                <span class="res-dim">1706x960</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="1080x1920">
+                            <div class="radio-content">
+                                <span class="res-name">1080p 세로</span>
+                                <span class="res-dim">1080x1920</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="resolution" value="1920x1080">
+                            <div class="radio-content">
+                                <span class="res-name">1080p 가로</span>
+                                <span class="res-dim">1920x1080</span>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <label class="radio-card">
-                    <input type="radio" name="resolution" value="960x544">
-                    <div class="radio-content">
-                        <span class="res-name">544p 가로</span>
-                        <span class="res-dim">960x544</span>
-                    </div>
-                </label>
-                <label class="radio-card">
-                    <input type="radio" name="resolution" value="1080x1920">
-                    <div class="radio-content">
-                        <span class="res-name">1080p 세로</span>
-                        <span class="res-dim">1080x1920</span>
-                    </div>
-                </label>
+                </div>
             </div>
 
             <div class="collapsible">
@@ -574,8 +654,15 @@
         const negTrigger = document.getElementById('neg-trigger');
         const negContent = document.getElementById('neg-content');
         const queueContainer = document.getElementById('queue-container');
+        const seedInput = document.getElementById('seed-input');
+        const randomSeedBtn = document.getElementById('random-seed-btn');
 
         let base64Image = null;
+
+        // Random Seed Logic
+        randomSeedBtn.addEventListener('click', () => {
+            seedInput.value = Math.floor(Math.random() * 10000000000000);
+        });
 
         // Load saved API Key
         apiKeyInput.value = localStorage.getItem('runpod_api_key') || '';
@@ -640,6 +727,26 @@
             const div = document.createElement('div');
             div.className = 'queue-item';
             div.id = `queue-${item.id}`;
+            
+            // Reuse Logic
+            div.addEventListener('click', (e) => {
+                // Don't trigger if clicking video controls
+                if (e.target.tagName === 'VIDEO') return;
+
+                if (div.classList.contains('completed')) {
+                    promptInput.value = item.prompt;
+                    seedInput.value = item.seed;
+                    
+                    // Visual feedback
+                    const originalBorder = div.style.borderColor;
+                    div.style.borderColor = 'var(--accent-color)';
+                    setTimeout(() => div.style.borderColor = originalBorder, 300);
+                    
+                    // Scroll to inputs
+                    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
             div.innerHTML = `
                 <img src="${item.thumb}" class="queue-thumb" alt="Thumbnail">
                 <div class="queue-content">
@@ -650,8 +757,12 @@
                         </div>
                         <div class="queue-meta">
                             <span>${item.resLabel} (${item.w}x${item.h})</span>
-                            <span>시드: ${item.seed}</span>
+                            <span>Seed: ${item.seed}</span>
                             <span id="status-text-${item.id}">Waiting...</span>
+                        </div>
+                        <div class="reuse-hint" style="display: none; color: var(--accent-color); font-size: 0.75rem; font-weight: 700; margin-top: 0.5rem;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+                            Click to Reuse Seed & Prompt
                         </div>
                     </div>
                     <div class="video-wrapper" id="video-wrapper-${item.id}">
@@ -715,6 +826,9 @@
 
             if (queueItem) {
                 queueItem.classList.add('completed');
+                queueItem.style.cursor = 'pointer';
+                const hint = queueItem.querySelector('.reuse-hint');
+                if (hint) hint.style.display = 'flex';
             }
 
             if (wrapper && video) {
@@ -722,9 +836,9 @@
                 video.src = videoSrc;
                 wrapper.classList.add('show');
                 
-                // Filename format: yymmdd-HHMMSS-seed.mp4
+                // Filename format: yymmdd-HHMMSS.mp4
                 const timestamp = getKSTTimestamp();
-                const filename = `${timestamp}-${seed}.mp4`;
+                const filename = `${timestamp}.mp4`;
                 
                 // Auto download
                 downloadVideo(videoSrc, filename);
@@ -830,7 +944,8 @@
 
             const res = getSelectedResolution();
             const itemId = Date.now();
-            const seed = Math.floor(Math.random() * 10000000000000);
+            let seed = seedInput.value ? parseInt(seedInput.value) : Math.floor(Math.random() * 10000000000000);
+            if (isNaN(seed)) seed = Math.floor(Math.random() * 10000000000000);
 
             const queueItem = {
                 id: itemId,
