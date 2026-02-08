@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RunPod WAN Video Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-color: #1a1a2e;
@@ -110,7 +113,8 @@
             transition: var(--transition);
         }
 
-        input:focus, textarea:focus {
+        input:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.2);
@@ -133,7 +137,8 @@
             justify-content: center;
         }
 
-        .upload-zone:hover, .upload-zone.drag-over {
+        .upload-zone:hover,
+        .upload-zone.drag-over {
             border-color: var(--accent-color);
             background-color: rgba(233, 69, 96, 0.05);
         }
@@ -215,7 +220,7 @@
             height: 100%;
         }
 
-        .radio-card input:checked + .radio-content {
+        .radio-card input:checked+.radio-content {
             border-color: var(--accent-color);
             background-color: rgba(233, 69, 96, 0.1);
             box-shadow: 0 0 0 1px var(--accent-color);
@@ -280,7 +285,9 @@
             display: none;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* Queue System */
         .queue-container {
@@ -366,10 +373,29 @@
             gap: 0.25rem;
         }
 
-        .status-badge.queued { background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); }
-        .status-badge.processing { background: rgba(52, 152, 219, 0.1); color: var(--processing-color); border: 1px solid rgba(52, 152, 219, 0.2); }
-        .status-badge.completed { background: rgba(46, 204, 113, 0.1); color: var(--success-color); border: 1px solid rgba(46, 204, 113, 0.2); }
-        .status-badge.failed { background: rgba(231, 76, 60, 0.1); color: var(--error-color); border: 1px solid rgba(231, 76, 60, 0.2); }
+        .status-badge.queued {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .status-badge.processing {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--processing-color);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .status-badge.completed {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .status-badge.failed {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
 
         .video-wrapper {
             margin-top: 1rem;
@@ -379,7 +405,7 @@
             background: #000;
             display: none;
         }
-        
+
         .video-wrapper.show {
             display: block;
         }
@@ -399,9 +425,14 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <h1>RunPod WAN Video Generator</h1>
@@ -410,27 +441,44 @@
         <!-- Settings -->
         <div class="card">
             <div class="section-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
                 Endpoint Settings
             </div>
             <div class="settings-grid">
                 <label for="api-key">RunPod API Key</label>
                 <input type="password" id="api-key" placeholder="Enter your rpa-..." autocomplete="current-password">
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Stored securely in your browser's localStorage.</p>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Stored securely in your
+                    browser's localStorage.</p>
             </div>
         </div>
 
         <!-- Inputs -->
         <div class="card">
             <div class="section-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                </svg>
                 Image to Video
             </div>
-            
+
             <input type="file" id="file-input" class="hidden" accept="image/*">
             <div class="upload-zone" id="drop-zone">
                 <div id="upload-prompt">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-color); margin-bottom: 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="color: var(--accent-color); margin-bottom: 1rem;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
                     <p>Click to upload or drag & drop an image</p>
                 </div>
                 <img id="image-preview" alt="Preview">
@@ -475,18 +523,25 @@
 
             <div class="collapsible">
                 <button class="collapsible-trigger" id="neg-trigger">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                     Advanced: Negative Prompt
                 </button>
                 <div class="collapsible-content" id="neg-content">
-                    <textarea id="negative-prompt">色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走</textarea>
+                    <textarea
+                        id="negative-prompt">色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走</textarea>
                 </div>
             </div>
 
             <div class="error-message" id="error-box"></div>
 
             <button class="btn" id="generate-btn" style="margin-top: 1.5rem;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
                 Generate Video
             </button>
         </div>
@@ -496,7 +551,7 @@
     </div>
 
     <script>
-        const endpointId = 'xtz116gth3tc2t';
+        const endpointId = 'rsqkwxcyar9hsk';
         const apiBase = `https://api.runpod.ai/v2/${endpointId}`;
 
         // DOM Elements
@@ -514,7 +569,7 @@
         const queueContainer = document.getElementById('queue-container');
 
         let base64Image = null;
-        
+
         // Load saved API Key
         apiKeyInput.value = localStorage.getItem('runpod_api_key') || '';
         apiKeyInput.addEventListener('input', (e) => {
@@ -607,7 +662,7 @@
 
             badge.className = `status-badge ${status.toLowerCase()}`;
             badge.innerHTML = status;
-            
+
             if (status === 'PROCESSING') {
                 badge.innerHTML = `<div class="badge-spinner"></div> Processing`;
             }
@@ -629,11 +684,11 @@
             const queueItem = document.getElementById(`queue-${id}`);
             const wrapper = document.getElementById(`video-wrapper-${id}`);
             const video = document.getElementById(`video-${id}`);
-            
+
             if (queueItem) {
                 queueItem.classList.add('completed');
             }
-            
+
             if (wrapper && video) {
                 const videoSrc = videoBase64.startsWith('data:') ? videoBase64 : `data:video/mp4;base64,${videoBase64}`;
                 video.src = videoSrc;
@@ -658,7 +713,7 @@
 
             try {
                 const rawBase64 = item.base64.split(',')[1];
-                
+
                 const payload = {
                     input: {
                         start_image: rawBase64,
@@ -685,7 +740,7 @@
 
                 const data = await response.json();
                 const jobId = data.id;
-                
+
                 updateItemStatus(item.id, 'PROCESSING', `Job ID: ${jobId}`);
                 pollJob(item, jobId);
 
@@ -704,7 +759,7 @@
                     if (!response.ok) throw new Error('Polling failed');
 
                     const data = await response.json();
-                    
+
                     if (data.status === 'COMPLETED') {
                         clearInterval(interval);
                         if (data.output && data.output.video) {
@@ -764,4 +819,5 @@
 
     </script>
 </body>
+
 </html>
