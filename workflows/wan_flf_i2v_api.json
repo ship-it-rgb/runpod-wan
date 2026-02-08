@@ -47,15 +47,31 @@
   },
   "288": {
     "inputs": {
-      "model": ["907", 0]
+      "model": ["393", 0]
     },
     "class_type": "ModelPassThrough"
   },
   "290": {
     "inputs": {
-      "model": ["910", 0]
+      "model": ["392", 0]
     },
     "class_type": "ModelPassThrough"
+  },
+  "392": {
+    "inputs": {
+      "sage_attention": "auto",
+      "allow_compile": false,
+      "model": ["910", 0]
+    },
+    "class_type": "PathchSageAttentionKJ"
+  },
+  "393": {
+    "inputs": {
+      "sage_attention": "auto",
+      "allow_compile": false,
+      "model": ["907", 0]
+    },
+    "class_type": "PathchSageAttentionKJ"
   },
   "323": {
     "inputs": {
