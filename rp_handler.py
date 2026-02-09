@@ -6,6 +6,7 @@ import requests
 import websocket
 import os
 import urllib.request
+import random
 from uuid import uuid4
 
 COMFY_HOST = "127.0.0.1:8188"
@@ -212,6 +213,16 @@ def handler(job):
             workflow["500:1"]["inputs"]["width"] = width
             workflow["500:1"]["inputs"]["height"] = height
             print(f"Resolution set to {width}x{height}")
+
+        # Node 834: PrimitiveInt (Seed for RandomNoise)
+        seed = job_input.get("seed")
+        if seed is None:
+            seed = random.randint(0, 2**53 - 1)  # Generate random seed if not provided
+        if "834" in workflow:
+            workflow["834"]["inputs"]["value"] = int(seed)
+            print(f"Seed set to {seed}")
+        else:
+            print("Warning: Node 834 (Seed) not found in workflow")
 
         # Queue workflow
         client_id = str(uuid4())
