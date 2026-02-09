@@ -189,27 +189,70 @@
 
         /* Resolution Selector */
         .resolution-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
             margin-top: 1.5rem;
         }
-        
-        .res-group-title {
+
+        .res-tabs {
+            display: flex;
+            background: var(--input-bg);
+            padding: 0.35rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            gap: 0.25rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--text-muted);
             font-size: 0.9rem;
-            font-weight: 700;
+            font-weight: 600;
+            font-family: 'Syne', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
             color: var(--accent-color);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.25rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .res-tab-content {
+            display: none;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .res-tab-content.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .resolution-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
+            gap: 1rem;
+        }
+
+        @media (min-width: 600px) {
+            .resolution-grid {
+                grid-template-columns: repeat(2, 1fr); /* Keep 2 cols for better readability on small cards or auto? */
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
         }
 
         .radio-card {
@@ -428,8 +471,11 @@
         }
 
         video {
-            width: 100%;
+            max-height: 80vh;
+            max-width: 100%;
+            width: auto;
             display: block;
+            margin: 0 auto;
         }
 
         /* Spinner for badge */
@@ -519,89 +565,104 @@
 
             <!-- Resolution Selector -->
             <div class="resolution-container">
-                <div class="res-group">
-                    <h4 class="res-group-title">Small (360p)</h4>
+                <div class="section-title" style="margin-bottom: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    Resolution
+                </div>
+                
+                <div class="res-tabs">
+                    <button type="button" class="tab-btn" onclick="openTab(event, 'res-small')">Small</button>
+                    <button type="button" class="tab-btn active" onclick="openTab(event, 'res-medium')">Medium</button>
+                    <button type="button" class="tab-btn" onclick="openTab(event, 'res-large')">Large</button>
+                </div>
+
+                <!-- Small Tab -->
+                <div id="res-small" class="res-tab-content">
                     <div class="resolution-grid">
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="360x640">
+                            <input type="radio" name="resolution" value="352x640">
                             <div class="radio-content">
-                                <span class="res-name">360p 세로</span>
-                                <span class="res-dim">360x640</span>
+                                <span class="res-name">352p Vertical</span>
+                                <span class="res-dim">352 x 640</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="640x360">
+                            <input type="radio" name="resolution" value="640x352">
                             <div class="radio-content">
-                                <span class="res-name">360p 가로</span>
-                                <span class="res-dim">640x360</span>
+                                <span class="res-name">352p Horizontal</span>
+                                <span class="res-dim">640 x 352</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <div class="res-group">
-                    <h4 class="res-group-title">Medium (544p / 720p)</h4>
+                <!-- Medium Tab -->
+                <div id="res-medium" class="res-tab-content active">
                     <div class="resolution-grid">
                         <label class="radio-card">
                             <input type="radio" name="resolution" value="544x960">
                             <div class="radio-content">
-                                <span class="res-name">544p 세로</span>
-                                <span class="res-dim">544x960</span>
+                                <span class="res-name">544p Vertical</span>
+                                <span class="res-dim">544 x 960</span>
                             </div>
                         </label>
                         <label class="radio-card">
                             <input type="radio" name="resolution" value="960x544">
                             <div class="radio-content">
-                                <span class="res-name">544p 가로</span>
-                                <span class="res-dim">960x544</span>
+                                <span class="res-name">544p Horizontal</span>
+                                <span class="res-dim">960 x 544</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="720x1280" checked>
+                            <input type="radio" name="resolution" value="704x1280" checked>
                             <div class="radio-content">
-                                <span class="res-name">720p 세로</span>
-                                <span class="res-dim">720x1280</span>
+                                <span class="res-name">720p Vertical</span>
+                                <span class="res-dim">704 x 1280</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="1280x720">
+                            <input type="radio" name="resolution" value="1280x704">
                             <div class="radio-content">
-                                <span class="res-name">720p 가로</span>
-                                <span class="res-dim">1280x720</span>
+                                <span class="res-name">720p Horizontal</span>
+                                <span class="res-dim">1280 x 704</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <div class="res-group">
-                    <h4 class="res-group-title">Large (960p / 1080p)</h4>
+                <!-- Large Tab -->
+                <div id="res-large" class="res-tab-content">
                     <div class="resolution-grid">
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="960x1706">
+                            <input type="radio" name="resolution" value="832x1472">
                             <div class="radio-content">
-                                <span class="res-name">960p 세로</span>
-                                <span class="res-dim">960x1706</span>
+                                <span class="res-name">832p Vertical</span>
+                                <span class="res-dim">832 x 1472</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="1706x960">
+                            <input type="radio" name="resolution" value="1472x832">
                             <div class="radio-content">
-                                <span class="res-name">960p 가로</span>
-                                <span class="res-dim">1706x960</span>
+                                <span class="res-name">832p Horizontal</span>
+                                <span class="res-dim">1472 x 832</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="1080x1920">
+                            <input type="radio" name="resolution" value="1088x1920">
                             <div class="radio-content">
-                                <span class="res-name">1080p 세로</span>
-                                <span class="res-dim">1080x1920</span>
+                                <span class="res-name">1080p Vertical</span>
+                                <span class="res-dim">1088 x 1920</span>
                             </div>
                         </label>
                         <label class="radio-card">
-                            <input type="radio" name="resolution" value="1920x1080">
+                            <input type="radio" name="resolution" value="1920x1088">
                             <div class="radio-content">
-                                <span class="res-name">1080p 가로</span>
-                                <span class="res-dim">1920x1080</span>
+                                <span class="res-name">1080p Horizontal</span>
+                                <span class="res-dim">1920 x 1088</span>
                             </div>
                         </label>
                     </div>
@@ -967,6 +1028,24 @@
             // Start Process
             processQueueItem(queueItem);
         });
+
+        // Tab Logic
+        function openTab(evt, tabId) {
+            const contents = document.getElementsByClassName("res-tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+                // Reset style in case inline style was set by animation logic previously
+                contents[i].style.display = ""; 
+            }
+            
+            const tabs = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
 
     </script>
 </body>
